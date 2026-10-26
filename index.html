@@ -1,0 +1,1031 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font:14px system-ui}[hidden]{display:none!important}</style></head><body><title>Five-Bus LMP Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: operator-console split — one-line diagram left, inputs right, result ledgers below. */
+:root {
+  --bg: #eef1f4;
+  --panel: #ffffff;
+  --sunk: #f5f7f9;
+  --ink: #15202b;
+  --muted: #5a6877;
+  --rule: #d5dce3;
+  --accent: #0a6a86;
+  --accent-ink: #ffffff;
+  --bind: #c2410c;
+  --warn: #a16207;
+  --good: #15803d;
+  --line-ink: #3b4a59;
+  --chip-bg: #e6ecf1;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e141a; --panel: #151d25; --sunk: #111820; --ink: #e3e9ef; --muted: #8d9aa8;
+    --rule: #28333e; --accent: #4bb2cf; --accent-ink: #06232c; --bind: #fb7a4f; --warn: #eab308;
+    --good: #4ade80; --line-ink: #a9b6c3; --chip-bg: #1f2a35; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e141a; --panel: #151d25; --sunk: #111820; --ink: #e3e9ef; --muted: #8d9aa8;
+  --rule: #28333e; --accent: #4bb2cf; --accent-ink: #06232c; --bind: #fb7a4f; --warn: #eab308;
+  --good: #4ade80; --line-ink: #a9b6c3; --chip-bg: #1f2a35; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.45; }
+.wrap { max-width: 1320px; margin: 0 auto; padding-block: 18px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: 0.01em; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.num, td.n, input[type=number] { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+.sub { color: var(--muted); margin-top: 2px; }
+.scen { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+select, .inp { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); padding: 6px 8px; }
+.btn { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.desc { color: var(--muted); font-size: 13px; max-width: 70ch; }
+
+.strip { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px 14px; }
+.tog { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.tog input { appearance: none; width: 34px; height: 20px; border-radius: 10px; background: var(--chip-bg); border: 1px solid var(--rule); position: relative; cursor: pointer; margin: 0; transition: background .15s; }
+.tog input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); transition: transform .15s, background .15s; }
+.tog input:checked { background: var(--accent); border-color: var(--accent); }
+.tog input:checked::after { transform: translateX(14px); background: var(--accent-ink); }
+.field { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+.field select, .field input { color: var(--ink); }
+.field input { width: 90px; }
+.spacer { flex: 1; }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--chip-bg); }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--good); }
+.status.warn::before { background: var(--warn); }
+.status.err::before { background: var(--bind); }
+.notes { display: grid; gap: 6px; }
+.notes:empty { display: none; }
+.note { border-left: 3px solid var(--warn); background: var(--panel); padding: 8px 12px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 13px; }
+
+.main { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); padding: 14px; min-width: 0; }
+.card-h { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+
+svg.net { width: 100%; min-width: 560px; height: auto; display: block; }
+svg.net text { font-family: var(--f-mono); fill: var(--ink); }
+svg.net .halo { paint-order: stroke; stroke: var(--panel); stroke-width: 5px; stroke-linejoin: round; }
+svg.net .muted { fill: var(--muted); }
+svg.net [data-focus] { cursor: pointer; }
+svg.net [data-focus]:hover .hit { stroke: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.ramp { width: 140px; height: 10px; border-radius: 5px; border: 1px solid var(--rule); }
+.key { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 18px; height: 4px; border-radius: 2px; }
+
+.kpis { display: flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; margin-top: 12px; }
+.kpi { flex: 1 1 140px; background: var(--panel); padding: 10px 12px; box-shadow: 0 0 0 0.5px var(--rule); }
+.kpi .l { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.kpi .v { font-family: var(--f-mono); font-size: 18px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 2px; border-bottom: 1px solid var(--rule); margin-bottom: 10px; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; cursor: pointer; color: var(--muted); font-weight: 500; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--ink); }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th.n { text-align: right; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+td.n { text-align: right; }
+tr.tot td { font-weight: 600; border-bottom: 0; border-top: 2px solid var(--rule); }
+tr.hl td { background: color-mix(in srgb, var(--accent) 12%, transparent); transition: background .6s; }
+.edit td { padding: 4px 6px; }
+.edit input { width: 100%; min-width: 72px; background: var(--sunk); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 6px; text-align: right; }
+.edit input:focus { border-color: var(--accent); background: var(--panel); }
+.edit input.bad { border-color: var(--bind); }
+.chip { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; padding: 2px 8px; border-radius: 999px; background: var(--chip-bg); color: var(--muted); }
+.chip.marg { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+.chip.full { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+.chip.bind { background: color-mix(in srgb, var(--bind) 18%, transparent); color: var(--bind); }
+.chip.near { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+.bar { position: relative; height: 8px; width: 120px; background: var(--chip-bg); border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; }
+.bar > i { position: absolute; top: 0; bottom: 0; left: 0; background: var(--accent); }
+.bar.b > i { background: var(--bind); }
+.bar.w > i { background: var(--warn); }
+.decomp { display: inline-flex; height: 10px; width: 160px; position: relative; vertical-align: middle; background: var(--chip-bg); border-radius: 2px; }
+.decomp i { position: absolute; top: 0; bottom: 0; }
+.foot { color: var(--muted); font-size: 12.5px; margin-top: 10px; max-width: 85ch; }
+.foot p { margin: 6px 0; }
+.pos { color: var(--bind); } .neg { color: var(--accent); }
+.hidden-msg { padding: 28px 12px; text-align: center; color: var(--muted); }
+.hidden-msg strong { color: var(--ink); display: block; font-family: var(--f-display); font-size: 18px; margin-bottom: 4px; }
+pre.lp { background: var(--sunk); border: 1px solid var(--rule); border-radius: var(--radius); padding: 12px; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.6; overflow-x: auto; margin: 8px 0; }
+pre.lp .c { color: var(--muted); }
+pre.lp .k { color: var(--accent); font-weight: 600; }
+.codebox { display: grid; gap: 8px; margin-top: 8px; }
+.codebox textarea { width: 100%; min-height: 64px; font-family: var(--f-mono); font-size: 12px; background: var(--sunk); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px; color: var(--ink); resize: vertical; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.small { font-size: 12px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Five-Bus LMP Lab</h1>
+      <div class="sub">Locational marginal prices from a DC optimal power flow, with optional losses and line limits.</div>
+    </div>
+    <div class="scen">
+      <label class="field" for="preset">Scenario
+        <select id="preset"></select>
+      </label>
+      <button class="btn" id="resetBtn" type="button">Reset scenario</button>
+      <button class="btn" id="codeBtn" type="button">Share / load</button>
+    </div>
+  </header>
+  <div class="desc" id="presetDesc"></div>
+  <div class="card codebox" id="codePanel" hidden>
+    <div class="small">Copy this code to give students the exact scenario (inputs and switches). Paste a code and press Load to open one.</div>
+    <textarea id="codeText" spellcheck="false" aria-label="Scenario code"></textarea>
+    <div class="row">
+      <button class="btn" id="copyCode" type="button">Copy code</button>
+      <button class="btn primary" id="loadCode" type="button">Load code</button>
+      <span class="small" id="codeMsg"></span>
+    </div>
+  </div>
+
+  <div class="strip">
+    <label class="tog"><input type="checkbox" id="optLoss"> Losses</label>
+    <label class="tog"><input type="checkbox" id="optCong"> Line limits</label>
+    <label class="tog"><input type="checkbox" id="optHide"> Hide results</label>
+    <button class="btn primary" id="revealBtn" type="button" hidden>Reveal results</button>
+    <span class="spacer"></span>
+    <label class="field" for="refBus">Reference bus
+      <select id="refBus"></select>
+    </label>
+    <label class="field" for="voll">VOLL $/MWh
+      <input class="inp num" id="voll" type="number" step="50" min="0">
+    </label>
+    <span class="status" id="status">Solving…</span>
+  </div>
+  <div class="notes" id="notes"></div>
+
+  <div class="main">
+    <section class="card" aria-label="Network diagram">
+      <div class="card-h"><h2>One-line diagram</h2><span class="small">Click a unit, load or line to edit it</span></div>
+      <div class="scroll"><svg class="net" id="net" viewBox="-40 0 780 575" role="img" aria-label="Five-bus network with flows and prices"></svg></div>
+      <div class="legend" id="legend"></div>
+      <div class="kpis" id="kpis"></div>
+    </section>
+
+    <section class="card" aria-label="Inputs">
+      <div class="tabs" role="tablist" id="inTabs">
+        <button class="tab" role="tab" data-tab="gens" aria-selected="true" type="button">Generators</button>
+        <button class="tab" role="tab" data-tab="loads" aria-selected="false" type="button">Loads</button>
+        <button class="tab" role="tab" data-tab="lines" aria-selected="false" type="button">Lines</button>
+      </div>
+      <div class="scroll" id="inBody"></div>
+      <div class="foot" id="inFoot"></div>
+    </section>
+  </div>
+
+  <section class="card" aria-label="Results">
+    <div class="tabs" role="tablist" id="outTabs">
+      <button class="tab" role="tab" data-tab="prices" aria-selected="true" type="button">Prices</button>
+      <button class="tab" role="tab" data-tab="settle" aria-selected="false" type="button">Dispatch &amp; settlement</button>
+      <button class="tab" role="tab" data-tab="lines" aria-selected="false" type="button">Lines</button>
+      <button class="tab" role="tab" data-tab="plus1" aria-selected="false" type="button">+1 MW test</button>
+      <button class="tab" role="tab" data-tab="compare" aria-selected="false" type="button">Compare</button>
+      <button class="tab" role="tab" data-tab="lp" aria-selected="false" type="button">Formulation</button>
+    </div>
+    <div id="outBody"></div>
+  </section>
+</div>
+
+<script>
+/* LMP engine: DC optimal power flow (B-theta form) with optional line
+   limits and successive linearised I^2R losses, solved with a small
+   self-contained simplex (Bland's rule) that also returns dual values.
+   Units: MW, $/MWh; reactance/resistance in per unit on a 100 MVA base. */
+(function (root) {
+  const BASE = 100;
+  const EPS = 1e-9;
+
+  /* ---------- generic LP: min c.x, rows (=, <=), bounds ---------- */
+  // model = { vars:[{name,lb,ub,c}], rows:[{name, coefs:{var:coef}, sense:'='|'<=', rhs}] }
+  function solveLP(model) {
+    const cols = []; // standard-form columns
+    const map = model.vars.map(() => []); // var -> [{col, sign}], plus offset
+    const offset = model.vars.map(() => 0);
+    const extraRows = [];
+    model.vars.forEach((v, i) => {
+      const lb = v.lb, ub = v.ub;
+      if (isFinite(lb)) {
+        offset[i] = lb;
+        const c = cols.length; cols.push({ c: v.c }); map[i].push({ col: c, s: 1 });
+        if (isFinite(ub)) extraRows.push({ coefs: [[c, 1]], rhs: ub - lb, ub: true });
+      } else if (isFinite(ub)) {
+        offset[i] = ub;
+        const c = cols.length; cols.push({ c: -v.c }); map[i].push({ col: c, s: -1 });
+      } else {
+        const c1 = cols.length; cols.push({ c: v.c });
+        const c2 = cols.length; cols.push({ c: -v.c });
+        map[i].push({ col: c1, s: 1 }, { col: c2, s: -1 });
+      }
+    });
+    const vIndex = {}; model.vars.forEach((v, i) => (vIndex[v.name] = i));
+    let objConst = 0;
+    model.vars.forEach((v, i) => (objConst += v.c * offset[i]));
+
+    const rows = [];
+    model.rows.forEach((r) => {
+      const coefs = []; let rhs = r.rhs;
+      for (const [name, a] of Object.entries(r.coefs)) {
+        const i = vIndex[name];
+        rhs -= a * offset[i];
+        for (const { col, s } of map[i]) coefs.push([col, a * s]);
+      }
+      rows.push({ coefs, rhs, sense: r.sense });
+    });
+    extraRows.forEach((r) => rows.push({ coefs: r.coefs, rhs: r.rhs, sense: "<=" }));
+    // slacks
+    rows.forEach((r) => {
+      if (r.sense === "<=") { const c = cols.length; cols.push({ c: 0 }); r.coefs.push([c, 1]); }
+    });
+    const m = rows.length, nx = cols.length;
+    // flip negative rhs
+    const flip = rows.map((r) => (r.rhs < 0 ? -1 : 1));
+    // tableau with artificials: [A | I | b]
+    const W = nx + m + 1;
+    const T = rows.map((r, i) => {
+      const row = new Float64Array(W);
+      for (const [c, a] of r.coefs) row[c] += a * flip[i];
+      row[nx + i] = 1;
+      row[W - 1] = r.rhs * flip[i];
+      return row;
+    });
+    const basis = rows.map((_, i) => nx + i);
+
+    function pivot(pr, pc) {
+      const prow = T[pr], pv = prow[pc];
+      for (let k = 0; k < W; k++) prow[k] /= pv;
+      for (let r = 0; r < m; r++) {
+        if (r === pr) continue;
+        const f = T[r][pc];
+        if (Math.abs(f) > 1e-15) { const row = T[r]; for (let k = 0; k < W; k++) row[k] -= f * prow[k]; }
+      }
+      basis[pr] = pc;
+    }
+    function runSimplex(cost, allowed) {
+      const skip = new Set();
+      for (let it = 0; it < 5000; it++) {
+        // reduced costs d_j = c_j - c_B B^-1 A_j (tableau already B^-1 A)
+        let enter = -1, dEnter = 0;
+        for (let j = 0; j < W - 1; j++) {
+          if (!allowed(j) || skip.has(j)) continue;
+          let d = cost(j);
+          for (let r = 0; r < m; r++) d -= cost(basis[r]) * T[r][j];
+          if (d < -1e-8) { enter = j; dEnter = d; break; } // Bland: lowest index
+        }
+        if (enter < 0) return "optimal";
+        let leave = -1, best = Infinity;
+        for (let r = 0; r < m; r++) {
+          const a = T[r][enter];
+          if (a > 1e-11) {
+            const ratio = T[r][W - 1] / a;
+            if (ratio < best - 1e-12 || (Math.abs(ratio - best) <= 1e-12 && basis[r] < basis[leave])) { best = ratio; leave = r; }
+          }
+        }
+        if (leave < 0) {
+          if (dEnter > -1e-6) { skip.add(enter); continue; } // numerical noise on a zero-cost ray
+          return "unbounded";
+        }
+        skip.clear();
+        pivot(leave, enter);
+      }
+      return "iteration limit";
+    }
+    // Phase 1
+    const c1 = (j) => (j >= nx ? 1 : 0);
+    let st = runSimplex(c1, () => true);
+    let infeas = 0; for (let r = 0; r < m; r++) if (basis[r] >= nx) infeas += T[r][W - 1];
+    if (infeas > 1e-7) return { status: "Infeasible" };
+    // drive artificials out of basis
+    for (let r = 0; r < m; r++) {
+      if (basis[r] >= nx) {
+        for (let j = 0; j < nx; j++) if (Math.abs(T[r][j]) > 1e-9) { pivot(r, j); break; }
+      }
+    }
+    // Phase 2 (artificials not allowed to enter)
+    const c2 = (j) => (j < nx ? cols[j].c : 0);
+    st = runSimplex(c2, (j) => j < nx);
+    if (st !== "optimal") return { status: st === "unbounded" ? "Unbounded" : "Iteration limit" };
+
+    // primal
+    const xs = new Float64Array(nx);
+    for (let r = 0; r < m; r++) if (basis[r] < nx) xs[basis[r]] = T[r][W - 1];
+    const x = {};
+    model.vars.forEach((v, i) => {
+      let val = offset[i];
+      for (const { col, s } of map[i]) val += s * xs[col];
+      x[v.name] = val;
+    });
+    // duals: y_i = c_B B^-1 e_i ; B^-1 columns sit under the artificial columns
+    const dual = {};
+    model.rows.forEach((r, i) => {
+      let y = 0;
+      for (let k = 0; k < m; k++) y += c2(basis[k]) * T[k][nx + i];
+      dual[r.name] = y * flip[i];
+    });
+    let obj = objConst;
+    for (let j = 0; j < nx; j++) obj += cols[j].c * xs[j];
+    return { status: "Optimal", x, dual, obj };
+  }
+
+  /* ---------- market model ---------- */
+  function buildModel(sys, opt, F0) {
+    const { buses, gens, lines } = sys;
+    const vars = [], rows = [];
+    gens.forEach((g, k) => vars.push({ name: `g${k}`, lb: 0, ub: Math.max(0, g.cap), c: g.offer }));
+    buses.forEach((b, i) => {
+      const d = sys.loads[b] || 0;
+      if (d > 0) vars.push({ name: `s${i}`, lb: 0, ub: d, c: opt.voll });
+      if (i > 0) vars.push({ name: `t${i}`, lb: -Infinity, ub: Infinity, c: 0 });
+    });
+    lines.forEach((l, j) => vars.push({ name: `f${j}`, lb: -Infinity, ub: Infinity, c: 0 }));
+    lines.forEach((l, j) => {
+      const a = buses.indexOf(l.from), b = buses.indexOf(l.to), k = BASE / l.x;
+      const coefs = { [`f${j}`]: 1 };
+      if (a > 0) coefs[`t${a}`] = -k;
+      if (b > 0) coefs[`t${b}`] = (coefs[`t${b}`] || 0) + k;
+      rows.push({ name: `flow${j}`, coefs, sense: "=", rhs: 0 });
+    });
+    buses.forEach((b, i) => {
+      const coefs = {}; let rhs = sys.loads[b] || 0;
+      gens.forEach((g, k) => { if (g.bus === b) coefs[`g${k}`] = 1; });
+      if ((sys.loads[b] || 0) > 0) coefs[`s${i}`] = 1;
+      lines.forEach((l, j) => {
+        if (l.from !== b && l.to !== b) return;
+        let c = l.from === b ? -1 : 1;
+        if (opt.losses) {
+          const rr = l.r / BASE;            // loss L ~ rr(2 F0 F - F0^2), half at each end
+          c -= rr * F0[j];
+          rhs -= 0.5 * rr * F0[j] * F0[j];
+        }
+        coefs[`f${j}`] = (coefs[`f${j}`] || 0) + c;
+      });
+      rows.push({ name: `bal${i}`, coefs, sense: "=", rhs });
+    });
+    if (opt.congestion) {
+      lines.forEach((l, j) => {
+        rows.push({ name: `limF${j}`, coefs: { [`f${j}`]: 1 }, sense: "<=", rhs: l.rating });
+        rows.push({ name: `limR${j}`, coefs: { [`f${j}`]: -1 }, sense: "<=", rhs: l.rating });
+      });
+    }
+    return { vars, rows };
+  }
+
+  function solveOnce(sys, opt, F0) {
+    const model = buildModel(sys, opt, F0);
+    const r = solveLP(model);
+    if (r.status !== "Optimal") return { ok: false, status: r.status, model };
+    const v = (n) => r.x[n] || 0;
+    return {
+      ok: true, model,
+      g: sys.gens.map((_, k) => v(`g${k}`)),
+      shed: sys.buses.map((_, i) => v(`s${i}`)),
+      theta: sys.buses.map((_, i) => v(`t${i}`)),
+      F: sys.lines.map((_, j) => v(`f${j}`)),
+      mu: sys.lines.map((_, j) => opt.congestion ? -(r.dual[`limF${j}`] + r.dual[`limR${j}`]) : 0),
+      muSign: sys.lines.map((_, j) => opt.congestion ? (Math.abs(r.dual[`limF${j}`]) >= Math.abs(r.dual[`limR${j}`]) ? 1 : -1) : 0),
+      lmp: sys.buses.map((_, i) => r.dual[`bal${i}`]),
+      obj: r.obj,
+    };
+  }
+
+  function gaussSolve(A, rhs) {
+    const m = A.length;
+    const M = A.map((row, i) => [...row, rhs[i]]);
+    for (let c = 0; c < m; c++) {
+      let p = c;
+      for (let r = c + 1; r < m; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      [M[c], M[p]] = [M[p], M[c]];
+      if (Math.abs(M[c][c]) < 1e-12) return null;
+      for (let r = 0; r < m; r++) {
+        if (r === c) continue;
+        const f = M[r][c] / M[c][c];
+        if (f) for (let k = c; k <= m; k++) M[r][k] -= f * M[c][k];
+      }
+    }
+    return M.map((row, k) => row[m] / row[k]);
+  }
+
+  // Marginal loss factor of bus t relative to reference bus s, using the
+  // same linearised loss model as the LP. = d(gen at s)/d(load at t) - 1.
+  function lossSensitivity(sys, s, t, F) {
+    const { buses, lines } = sys;
+    const n = buses.length, L = lines.length, N = n - 1 + L + 1;
+    const A = [], rhs = [];
+    const thCol = (i) => (i === 0 ? -1 : i - 1);
+    lines.forEach((l, j) => {
+      const row = new Array(N).fill(0);
+      row[n - 1 + j] = 1;
+      const a = buses.indexOf(l.from), b = buses.indexOf(l.to), k = BASE / l.x;
+      if (thCol(a) >= 0) row[thCol(a)] -= k;
+      if (thCol(b) >= 0) row[thCol(b)] += k;
+      A.push(row); rhs.push(0);
+    });
+    buses.forEach((bus) => {
+      const row = new Array(N).fill(0);
+      lines.forEach((l, j) => {
+        if (l.from !== bus && l.to !== bus) return;
+        row[n - 1 + j] += (l.from === bus ? -1 : 1) - (l.r / BASE) * F[j];
+      });
+      if (bus === s) row[N - 1] = 1;
+      A.push(row); rhs.push(bus === t ? 1 : 0);
+    });
+    const x = gaussSolve(A, rhs);
+    return x ? x[N - 1] - 1 : 0;
+  }
+
+  function solve(sys, opt) {
+    opt = Object.assign({ losses: false, congestion: false, voll: 1000, ref: sys.buses[0], maxIter: 60, tol: 1e-4 }, opt);
+    let F0 = sys.lines.map(() => 0);
+    let res, iter = 0, converged = true;
+    if (!opt.losses) {
+      res = solveOnce(sys, opt, F0);
+    } else {
+      converged = false;
+      let damp = 1, prevErr = Infinity;
+      for (iter = 1; iter <= opt.maxIter; iter++) {
+        res = solveOnce(sys, opt, F0);
+        if (!res.ok) break;
+        const err = Math.max(...res.F.map((f, j) => Math.abs(f - F0[j])));
+        if (err < opt.tol) { converged = true; break; }
+        if (err > prevErr * 0.95) damp = Math.max(0.2, damp * 0.7);
+        prevErr = err;
+        F0 = res.F.map((f, j) => F0[j] + damp * (f - F0[j]));
+      }
+      if (iter > opt.maxIter) iter = opt.maxIter;
+    }
+    if (!res || !res.ok) return { ok: false, status: res ? res.status : "Error" };
+
+    const { buses, gens, lines } = sys;
+    const clean = (v) => (Math.abs(v) < 1e-7 ? 0 : v);
+    res.lmp = res.lmp.map(clean);
+    const loss = lines.map((l, j) => (opt.losses ? (l.r / BASE) * res.F[j] * res.F[j] : 0));
+
+    const refIdx = buses.indexOf(opt.ref);
+    const lmpRef = res.lmp[refIdx];
+    const comp = buses.map((b, i) => {
+      const mlf = opt.losses && b !== opt.ref ? lossSensitivity(sys, opt.ref, b, res.F) : 0;
+      const lossC = lmpRef * mlf;
+      return { mlf, energy: lmpRef, loss: clean(lossC), cong: clean(res.lmp[i] - lmpRef - lossC) };
+    });
+
+    const lineOut = lines.map((l, j) => {
+      const F = res.F[j], L = loss[j];
+      const a = buses.indexOf(l.from), b = buses.indexOf(l.to);
+      const send = F + L / 2, recv = F - L / 2;
+      const binding = opt.congestion && Math.abs(Math.abs(F) - l.rating) < 1e-5;
+      return { F, loss: L, send, recv, mu: binding ? Math.abs(res.mu[j]) : 0, binding,
+        loading: Math.abs(F) / l.rating, surplus: res.lmp[b] * recv - res.lmp[a] * send };
+    });
+    const genOut = gens.map((g, k) => {
+      const p = res.g[k], price = res.lmp[buses.indexOf(g.bus)];
+      const status = p < 1e-6 ? "off" : p > g.cap - 1e-6 ? "full" : "marginal";
+      return { p, price, revenue: price * p, cost: g.offer * p, profit: (price - g.offer) * p, status };
+    });
+    const loadOut = buses.map((b, i) => {
+      const d = sys.loads[b] || 0;
+      return { d, shed: res.shed[i], served: d - res.shed[i], payment: res.lmp[i] * (d - res.shed[i]) };
+    });
+    const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+    const loadPay = sum(loadOut, (x) => x.payment), genRev = sum(genOut, (x) => x.revenue);
+    return {
+      ok: true, converged, iterations: iter, obj: res.obj, model: res.model,
+      lmp: res.lmp, theta: res.theta, comp, lines: lineOut, gens: genOut, loads: loadOut,
+      totals: {
+        gen: sum(genOut, (x) => x.p), load: sum(loadOut, (x) => x.d), shed: sum(loadOut, (x) => x.shed),
+        losses: sum(loss, (x) => x), loadPay, genRev, surplus: loadPay - genRev,
+        genCost: sum(genOut, (x) => x.cost),
+      },
+    };
+  }
+
+  const api = { solve, solveLP, buildModel, lossSensitivity, BASE };
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.LMPEngine = api;
+})(this);
+
+</script>
+<script>
+(function () {
+"use strict";
+const E = window.LMPEngine;
+
+/* ---------- base case and presets ---------- */
+const POS = { 1: [360, 92], 2: [140, 238], 5: [585, 238], 3: [220, 455], 4: [500, 455] };
+const GEN_POS = { 1: [262, 92], 2: [48, 238], 3: [124, 455], 4: [596, 455], 5: [585, 150] };
+const LOAD_END = { 1: [452, 92], 2: [92, 312], 3: [220, 528], 4: [500, 528], 5: [662, 238] };
+const PRICE_POS = { 1: [360, 48, "middle"], 2: [140, 196, "middle"], 5: [585, 196, "middle"], 3: [262, 500, "start"], 4: [458, 500, "end"] };
+
+function baseCase() {
+  return {
+    gens: [
+      { name: "G1", bus: 1, cap: 1500, offer: 5 },
+      { name: "G2", bus: 2, cap: 1000, offer: 50 },
+      { name: "G3", bus: 3, cap: 350, offer: 20 },
+      { name: "G4", bus: 4, cap: 100, offer: 19 },
+    ],
+    loads: { 1: 500, 2: 0, 3: 500, 4: 250, 5: 500 },
+    lines: [[1, 2], [1, 3], [1, 5], [2, 3], [3, 4], [4, 5]].map(([f, t]) => ({ from: f, to: t, x: 0.1, r: 0.01, rating: 800 })),
+    losses: false, congestion: false, ref: 3, voll: 1000,
+  };
+}
+const PRESETS = [
+  { id: "p30", name: "Unconstrained, no losses", desc: "", f: (s) => s },
+  { id: "p36", name: "Unconstrained, with losses", desc: "Slide 36. I²R losses (r = 0.01 pu) separate the prices. G3 picks up the 43 MW of losses.", f: (s) => { s.losses = true; return s; } },
+  { id: "p43", name: "Losses, +1 MW at bus 5", desc: "Slide 43. Cost rises by $20.73, the LMP at bus 5: 1 MW from G3 plus about 0.04 MW of extra losses.", f: (s) => { s.losses = true; s.loads[5] = 501; return s; } },
+  { id: "p46", name: "Losses, +1 MW at bus 1", desc: "Slide 46. Cost rises by only $18.76: load at bus 1 relieves flows out of bus 1, so losses fall.", f: (s) => { s.losses = true; s.loads[1] = 501; return s; } },
+  { id: "p48", name: "Line 1–5 limited to 480 MW", desc: "Slide 48. Congestion on line 1–5 makes G1 and G3 both marginal; prices behind the constraint rise to $42.66 and $64.50.", f: (s) => { s.losses = true; s.congestion = true; s.lines[2].rating = 480; return s; } },
+];
+
+/* ---------- state ---------- */
+let S, presetId = "p30", hidden = false, revealed = false, baseline = null, inTab = "gens", outTab = "prices", R = null;
+const LS = "lmp-lab-v1";
+function save() { try { localStorage.setItem(LS, JSON.stringify({ S, presetId, hidden, inTab, outTab })); } catch (e) {} }
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(LS) || "null");
+    if (d && d.S && d.S.gens && d.S.lines) { S = d.S; presetId = d.presetId || "custom"; hidden = !!d.hidden; inTab = d.inTab || "gens"; outTab = d.outTab || "prices"; return; }
+  } catch (e) {}
+  S = PRESETS[0].f(baseCase());
+}
+function applyPreset(id) {
+  const p = PRESETS.find((x) => x.id === id);
+  if (!p) return;
+  presetId = id; S = p.f(baseCase()); revealed = false;
+}
+
+/* ---------- helpers ---------- */
+const $ = (id) => document.getElementById(id);
+const BUSES = [1, 2, 3, 4, 5];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const f1 = (v) => (Math.abs(v) < 0.05 ? 0 : v).toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const f2 = (v) => (Math.abs(v) < 0.005 ? 0 : v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const f4 = (v) => (Math.abs(v) < 0.00005 ? 0 : v).toFixed(4);
+const money = (v) => (v < -0.005 ? "−$" : "$") + f2(Math.abs(v));
+const signed = (v, f = f2) => (v > 0.0005 ? "+" : v < -0.0005 ? "−" : "") + f(Math.abs(v));
+const lineName = (l) => `${l.from}–${l.to}`;
+const showResults = () => !hidden || revealed;
+
+function sysFrom(st) {
+  return { buses: BUSES, gens: st.gens, loads: st.loads, lines: st.lines };
+}
+function optsFrom(st) {
+  return { losses: st.losses, congestion: st.congestion, voll: st.voll, ref: st.ref };
+}
+function validInputs() {
+  const bad = [];
+  S.gens.forEach((g) => { if (!(g.cap >= 0) || !isFinite(g.offer)) bad.push(g.name); });
+  BUSES.forEach((b) => { if (!(S.loads[b] >= 0)) bad.push("load " + b); });
+  S.lines.forEach((l) => { if (!(l.x > 0) || !(l.r >= 0) || !(l.rating > 0)) bad.push("line " + lineName(l)); });
+  if (!(S.voll > 0)) bad.push("VOLL");
+  return bad;
+}
+
+/* ---------- LMP colour scale (ISO contour-map style) ---------- */
+const STOPS = [[37, 99, 175], [20, 150, 160], [74, 170, 80], [225, 190, 40], [235, 125, 35], [205, 45, 45]];
+function rampColor(t) {
+  t = Math.max(0, Math.min(1, t));
+  const x = t * (STOPS.length - 1), i = Math.min(STOPS.length - 2, Math.floor(x)), u = x - i;
+  const c = STOPS[i].map((v, k) => Math.round(v + (STOPS[i + 1][k] - v) * u));
+  return c;
+}
+function priceColor(p, lo, hi) {
+  if (hi - lo < 0.005) return rampColor(0.35);
+  return rampColor((p - lo) / (hi - lo));
+}
+const rgb = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
+const lum = (c) => (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255;
+
+/* ---------- solve ---------- */
+function solveNow() {
+  const bad = validInputs();
+  if (bad.length) { R = { ok: false, status: "Check inputs: " + bad.join(", ") }; return; }
+  const t0 = performance.now();
+  R = E.solve(sysFrom(S), optsFrom(S));
+  if (R.ok) R.ms = performance.now() - t0;
+}
+
+/* ---------- diagram ---------- */
+function drawNet() {
+  const show = showResults() && R && R.ok;
+  const lmps = show ? R.lmp : null;
+  const lo = show ? Math.min(...lmps) : 0, hi = show ? Math.max(...lmps) : 0;
+  let s = `<defs><marker id="ldArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>`;
+  // lines
+  S.lines.forEach((l, j) => {
+    const [x1, y1] = POS[l.from], [x2, y2] = POS[l.to];
+    const lr = show ? R.lines[j] : null;
+    let col = "var(--line-ink)", w = 2.2;
+    if (lr) {
+      w = 1.6 + 7 * Math.min(1, Math.abs(lr.F) / 800);
+      if (lr.binding) col = "var(--bind)";
+      else if (S.congestion && lr.loading > 0.9) col = "var(--warn)";
+    }
+    s += `<g data-focus="line:${j}" aria-label="Line ${lineName(l)}">`;
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="18"/>`;
+    s += `<line class="hit" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w.toFixed(1)}" stroke-linecap="round"/>`;
+    const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy), ux = dx / len, uy = dy / len;
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    if (lr && Math.abs(lr.F) > 0.05) {
+      const dir = lr.F > 0 ? 1 : -1, ax = mx + dir * ux * len * 0.26, ay = my + dir * uy * len * 0.26;
+      const sz = 7 + w * 0.6, bx = ax - dir * ux * sz * 1.6, by = ay - dir * uy * sz * 1.6;
+      s += `<polygon points="${ax},${ay} ${bx - uy * sz},${by + ux * sz} ${bx + uy * sz},${by - ux * sz}" fill="${col}"/>`;
+    }
+    // label offset perpendicular
+    let nx = -uy, ny = ux;
+    if (ny < 0 || (Math.abs(ny) < 0.2 && nx < 0)) { nx = -nx; ny = -ny; }
+    const off = 20, lx = mx + nx * off * (j === 1 ? -1 : 1), ly = my + ny * off * (j === 1 ? -1 : 1);
+    let txt = show ? `${f1(Math.abs(lr.F))} MW` : `${lineName(l)}`;
+    s += `<text class="halo" x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="600">${txt}</text>`;
+    if (S.congestion) {
+      s += `<text class="halo muted" x="${lx.toFixed(1)}" y="${(ly + 19).toFixed(1)}" text-anchor="middle" font-size="11" ${lr && lr.binding ? 'style="fill:var(--bind)"' : ""}>limit ${f1(l.rating).replace(".0", "")}</text>`;
+    }
+    s += `</g>`;
+  });
+  // loads
+  BUSES.forEach((b) => {
+    const d = S.loads[b] || 0;
+    if (d <= 0) return;
+    const [x1, y1] = POS[b], [x2, y2] = LOAD_END[b];
+    const len = Math.hypot(x2 - x1, y2 - y1), sx = x1 + (x2 - x1) * 28 / len, sy = y1 + (y2 - y1) * 28 / len;
+    s += `<g data-focus="load:${b}" style="color:var(--ink)">`;
+    s += `<line x1="${sx}" y1="${sy}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="16"/>`;
+    s += `<line class="hit" x1="${sx}" y1="${sy}" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width="2" marker-end="url(#ldArrow)"/>`;
+    const below = y2 > y1 + 20, left = x2 < x1 - 20;
+    const tx = below ? x2 : left ? x2 - 4 : x2 + 8, ty = below ? y2 + 18 : y2 + 4, anc = below ? "middle" : left ? "end" : "start";
+    const shed = show && R.loads[BUSES.indexOf(b)].shed > 0.05;
+    s += `<text class="halo" x="${tx}" y="${ty}" text-anchor="${anc}" font-size="12.5" style="fill:var(--accent)">${f1(d)} MW</text>`;
+    if (shed) s += `<text class="halo" x="${tx}" y="${ty + 15}" text-anchor="${anc}" font-size="11" style="fill:var(--bind)">unserved ${f1(R.loads[BUSES.indexOf(b)].shed)}</text>`;
+    s += `</g>`;
+  });
+  // generators
+  S.gens.forEach((g, k) => {
+    const [gx, gy] = GEN_POS[g.bus], [bx, by] = POS[g.bus];
+    const gr = show ? R.gens[k] : null;
+    s += `<g data-focus="gen:${k}">`;
+    s += `<line x1="${gx}" y1="${gy}" x2="${bx}" y2="${by}" stroke="var(--line-ink)" stroke-width="1.6"/>`;
+    const fill = gr ? (gr.status === "marginal" ? "var(--accent)" : gr.status === "full" ? "var(--good)" : "var(--chip-bg)") : "var(--chip-bg)";
+    const ink = gr && gr.status !== "off" ? "var(--panel)" : "var(--ink)";
+    s += `<circle class="hit" cx="${gx}" cy="${gy}" r="17" fill="${fill}" stroke="var(--line-ink)" stroke-width="1.4"/>`;
+    s += `<path d="M${gx - 10},${gy} q5,-9 10,0 t10,0" fill="none" stroke="${ink}" stroke-width="2"/>`;
+    const top = gy - 40;
+    s += `<text class="halo" x="${gx}" y="${top}" text-anchor="middle" font-size="12.5" font-weight="600">${esc(g.name)} · ${gr ? f1(gr.p) + " MW" : "? MW"}</text>`;
+    s += `<text class="halo muted" x="${gx}" y="${top + 15}" text-anchor="middle" font-size="11">${money(g.offer)} · cap ${f1(g.cap).replace(".0", "")}</text>`;
+    s += `</g>`;
+  });
+  // buses
+  BUSES.forEach((b, i) => {
+    const [x, y] = POS[b];
+    let fill = "var(--panel)", ink = "var(--ink)";
+    if (show) { const c = priceColor(lmps[i], lo, hi); fill = rgb(c); ink = lum(c) > 0.55 ? "#111" : "#fff"; }
+    s += `<g data-focus="bus:${b}"><circle class="hit" cx="${x}" cy="${y}" r="24" fill="${fill}" stroke="var(--ink)" stroke-width="1.6"/>`;
+    s += `<text x="${x}" y="${y + 6}" text-anchor="middle" font-size="17" font-weight="600" style="fill:${ink};font-family:var(--f-display)">${b}</text></g>`;
+    const [px, py, anc] = PRICE_POS[b];
+    s += `<text class="halo" x="${px}" y="${py}" text-anchor="${anc}" font-size="14.5" font-weight="600">${show ? money(lmps[i]) : "$ ?"}</text>`;
+  });
+  $("net").innerHTML = s;
+
+  // legend
+  let lg = "";
+  if (show) {
+    const stops = STOPS.map((c, i) => `${rgb(c)} ${(i / (STOPS.length - 1)) * 100}%`).join(",");
+    lg += `<span class="key">LMP ${money(lo)} <span class="ramp" style="background:linear-gradient(90deg,${hi - lo < 0.005 ? rgb(rampColor(0.35)) + "," + rgb(rampColor(0.35)) : stops})"></span> ${money(hi)}</span>`;
+  }
+  lg += `<span class="key"><span class="swatch" style="background:var(--good)"></span>unit at capacity</span>`;
+  lg += `<span class="key"><span class="swatch" style="background:var(--accent)"></span>marginal unit</span>`;
+  if (S.congestion) lg += `<span class="key"><span class="swatch" style="background:var(--bind)"></span>binding limit</span>`;
+  lg += `<span class="key">line width ∝ flow · flows shown at mid-line</span>`;
+  $("legend").innerHTML = lg;
+}
+
+function drawKpis() {
+  const show = showResults() && R && R.ok;
+  const t = show ? R.totals : null;
+  const items = [
+    ["Total cost (objective)", show ? money(R.obj) : "—"],
+    ["Generation", show ? f1(t.gen) + " MW" : "—"],
+    ["Load", f1(BUSES.reduce((a, b) => a + (S.loads[b] || 0), 0)) + " MW"],
+    ["Losses", show ? f1(t.losses) + " MW" : "—"],
+    ["Merchandising surplus", show ? money(t.surplus) : "—"],
+  ];
+  if (show && t.shed > 0.05) items.push(["Unserved load", f1(t.shed) + " MW"]);
+  $("kpis").innerHTML = items.map(([l, v]) => `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
+}
+
+function drawStatus() {
+  const st = $("status"), notes = [];
+  st.className = "status";
+  if (!R || !R.ok) {
+    st.classList.add("err");
+    st.textContent = R ? (R.status.startsWith("Check") ? R.status : "No solution: " + R.status) : "Solving…";
+  } else {
+    let txt = "Optimal";
+    if (S.losses) txt += ` · ${R.iterations} loss iteration${R.iterations === 1 ? "" : "s"}`;
+    if (!R.converged) { st.classList.add("warn"); txt = "Loss iterations did not converge"; }
+    st.textContent = txt;
+    if (R.totals.shed > 0.05 && showResults()) notes.push(`Supply or the network cannot serve all load: ${f1(R.totals.shed)} MW is unserved and priced at the value of lost load ($${f2(S.voll)}/MWh).`);
+    if (S.losses && S.gens.some((g) => g.offer < 0)) notes.push("Negative offers with losses: the market prefers to burn energy as extra losses, which is a non-convex problem. The solution shown is one valid outcome; the iterations can settle on others.");
+  }
+  $("notes").innerHTML = notes.map((n) => `<div class="note">${n}</div>`).join("");
+  $("revealBtn").hidden = !(hidden && !revealed);
+}
+
+/* ---------- inputs ---------- */
+function numInput(key, val, step, label, extra = "") {
+  return `<input type="number" id="in-${key}" data-key="${key}" value="${val}" step="${step}" aria-label="${esc(label)}" ${extra}>`;
+}
+function drawInputs() {
+  document.querySelectorAll("#inTabs .tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.tab === inTab));
+  let h = "", foot = "";
+  if (inTab === "gens") {
+    h = `<table class="edit"><thead><tr><th>Unit</th><th>Bus</th><th class="n">Capacity MW</th><th class="n">Offer $/MWh</th></tr></thead><tbody>`;
+    S.gens.forEach((g, k) => {
+      h += `<tr id="row-gen-${k}"><td><b>${esc(g.name)}</b></td><td>${g.bus}</td><td>${numInput(`gen.${k}.cap`, g.cap, 10, g.name + " capacity", 'min="0"')}</td><td>${numInput(`gen.${k}.offer`, g.offer, 1, g.name + " offer")}</td></tr>`;
+    });
+    h += `</tbody></table>`;
+    foot = "Each unit offers one block: its full capacity at a single price. Negative offers are allowed.";
+  } else if (inTab === "loads") {
+    h = `<table class="edit"><thead><tr><th>Bus</th><th class="n">Demand MW</th></tr></thead><tbody>`;
+    BUSES.forEach((b) => (h += `<tr id="row-load-${b}"><td><b>Bus ${b}</b></td><td>${numInput(`load.${b}`, S.loads[b] || 0, 10, "Load at bus " + b, 'min="0"')}</td></tr>`));
+    h += `</tbody></table>`;
+    foot = "Demand is fixed (price-inelastic). If it cannot be served, the shortfall is priced at the value of lost load.";
+  } else {
+    h = `<table class="edit"><thead><tr><th>Line</th><th class="n">X pu</th><th class="n">R pu</th><th class="n">Limit MW</th></tr></thead><tbody>`;
+    S.lines.forEach((l, j) => {
+      h += `<tr id="row-line-${j}"><td><b>${lineName(l)}</b></td><td>${numInput(`line.${j}.x`, l.x, 0.01, "Reactance " + lineName(l), 'min="0.001"')}</td><td>${numInput(`line.${j}.r`, l.r, 0.001, "Resistance " + lineName(l), 'min="0"')}</td><td>${numInput(`line.${j}.rating`, l.rating, 10, "Limit " + lineName(l), 'min="1"')}</td></tr>`;
+    });
+    h += `</tbody></table>`;
+    foot = "Per unit on a 100 MVA base. Reactance sets how flow splits between paths; resistance only matters when Losses is on; limits only when Line limits is on.";
+  }
+  $("inBody").innerHTML = h;
+  $("inFoot").textContent = foot;
+}
+function onInput(e) {
+  const el = e.target; if (!el.dataset.key) return;
+  const v = parseFloat(el.value);
+  const p = el.dataset.key.split(".");
+  if (el.value === "" || !isFinite(v)) { el.classList.add("bad"); return; }
+  el.classList.remove("bad");
+  if (p[0] === "gen") S.gens[+p[1]][p[2]] = v;
+  else if (p[0] === "load") S.loads[+p[1]] = v;
+  else if (p[0] === "line") S.lines[+p[1]][p[2]] = v;
+  markCustom();
+  schedule();
+}
+function markCustom() {
+  if (!presetId.endsWith("*") && presetId !== "custom") presetId = presetId + "*";
+  syncHeader();
+}
+
+/* ---------- results tabs ---------- */
+function hiddenMsg() {
+  return `<div class="hidden-msg"><strong>Results are hidden</strong>Write down your prediction for the dispatch, flows and prices, then press <b>Reveal results</b>.</div>`;
+}
+function drawOut() {
+  document.querySelectorAll("#outTabs .tab").forEach((t) => t.setAttribute("aria-selected", t.dataset.tab === outTab));
+  const body = $("outBody");
+  if (outTab === "lp") { body.innerHTML = lpView(); return; }
+  if (!R || !R.ok) { body.innerHTML = `<div class="hidden-msg"><strong>No solution</strong>${esc(R ? R.status : "")}</div>`; return; }
+  if (!showResults()) { body.innerHTML = hiddenMsg(); return; }
+  body.innerHTML = { prices: pricesView, settle: settleView, lines: linesView, plus1: plus1View, compare: compareView }[outTab]();
+}
+
+function pricesView() {
+  const ref = S.ref;
+  const maxAbs = Math.max(1, ...R.comp.map((c) => Math.abs(c.energy) + Math.abs(c.loss) + Math.abs(c.cong)));
+  let h = `<div class="scroll"><table><thead><tr><th>Bus</th><th class="n">LMP $/MWh</th><th class="n">Energy</th><th class="n">Loss</th><th class="n">Congestion</th><th class="n">Marginal loss factor</th><th>Make-up</th></tr></thead><tbody>`;
+  BUSES.forEach((b, i) => {
+    const c = R.comp[i];
+    // stacked bar from zero: energy, then loss, then congestion
+    const scale = 80 / maxAbs; let x = 80, segs = "";
+    [[c.energy, "var(--line-ink)"], [c.loss, "var(--warn)"], [c.cong, "var(--bind)"]].forEach(([v, col]) => {
+      if (Math.abs(v) < 0.005) return;
+      const w = Math.abs(v) * scale, left = v >= 0 ? x : x - w;
+      segs += `<i style="left:${left}px;width:${Math.max(1, w)}px;background:${col}"></i>`;
+      x = v >= 0 ? x + w : x - w;
+    });
+    h += `<tr><td><b>Bus ${b}</b>${b === ref ? ' <span class="chip">reference</span>' : ""}</td><td class="n"><b>${money(R.lmp[i])}</b></td><td class="n">${money(c.energy)}</td><td class="n">${signed(c.loss)}</td><td class="n">${signed(c.cong)}</td><td class="n">${signed(c.mlf, f4)}</td><td><span class="decomp">${segs}<i style="left:80px;width:1px;background:var(--muted)"></i></span></td></tr>`;
+  });
+  h += `</tbody></table></div>`;
+  h += `<div class="legend"><span class="key"><span class="swatch" style="background:var(--line-ink)"></span>energy</span><span class="key"><span class="swatch" style="background:var(--warn)"></span>loss</span><span class="key"><span class="swatch" style="background:var(--bind)"></span>congestion</span></div>`;
+  h += `<div class="foot"><p><b>LMP</b> is the dual variable (shadow price) of each bus's power-balance constraint: the change in total cost if that bus's load rises by 1 MW.</p>
+  <p><b>Energy</b> is the LMP at the reference bus. <b>Loss</b> = energy × marginal loss factor, where the factor is the extra generation at the reference bus needed per MW delivered to this bus, minus 1. <b>Congestion</b> is the remainder, driven by the shadow prices of binding line limits. Changing the reference bus moves value between components but never changes the LMPs.</p></div>`;
+  return h;
+}
+
+function settleView() {
+  let h = `<h3 class="small" style="margin:4px 0 6px;text-transform:uppercase;letter-spacing:.06em">Generators</h3><div class="scroll"><table><thead><tr><th>Unit</th><th>Bus</th><th class="n">Offer</th><th class="n">Capacity</th><th class="n">Dispatch MW</th><th>Status</th><th class="n">LMP</th><th class="n">Revenue</th><th class="n">Offer cost</th><th class="n">Profit</th></tr></thead><tbody>`;
+  S.gens.forEach((g, k) => {
+    const r = R.gens[k];
+    const chip = r.status === "full" ? '<span class="chip full">at capacity</span>' : r.status === "marginal" ? '<span class="chip marg">marginal</span>' : '<span class="chip">off</span>';
+    h += `<tr><td><b>${esc(g.name)}</b></td><td>${g.bus}</td><td class="n">${money(g.offer)}</td><td class="n">${f1(g.cap)}</td><td class="n"><b>${f1(r.p)}</b></td><td>${chip}</td><td class="n">${money(r.price)}</td><td class="n">${money(r.revenue)}</td><td class="n">${money(r.cost)}</td><td class="n">${money(r.profit)}</td></tr>`;
+  });
+  const t = R.totals;
+  h += `<tr class="tot"><td colspan="4">Total</td><td class="n">${f1(t.gen)}</td><td></td><td></td><td class="n">${money(t.genRev)}</td><td class="n">${money(t.genCost)}</td><td class="n">${money(t.genRev - t.genCost)}</td></tr></tbody></table></div>`;
+  h += `<h3 class="small" style="margin:16px 0 6px;text-transform:uppercase;letter-spacing:.06em">Loads</h3><div class="scroll"><table><thead><tr><th>Bus</th><th class="n">Demand MW</th><th class="n">Unserved MW</th><th class="n">LMP</th><th class="n">Payment</th></tr></thead><tbody>`;
+  BUSES.forEach((b, i) => {
+    const r = R.loads[i];
+    if (r.d <= 0) return;
+    h += `<tr><td><b>Bus ${b}</b></td><td class="n">${f1(r.d)}</td><td class="n">${r.shed > 0.05 ? `<span class="pos">${f1(r.shed)}</span>` : "0.0"}</td><td class="n">${money(R.lmp[i])}</td><td class="n">${money(r.payment)}</td></tr>`;
+  });
+  h += `<tr class="tot"><td>Total</td><td class="n">${f1(t.load)}</td><td class="n">${f1(t.shed)}</td><td></td><td class="n">${money(t.loadPay)}</td></tr></tbody></table></div>`;
+  h += `<div class="scroll" style="margin-top:16px"><table style="max-width:520px"><tbody>
+    <tr><td>Load payments</td><td class="n">${money(t.loadPay)}</td></tr>
+    <tr><td>− Generator revenue</td><td class="n">${money(t.genRev)}</td></tr>
+    <tr class="tot"><td>Merchandising surplus (collected by the ISO)</td><td class="n">${money(t.surplus)}</td></tr></tbody></table></div>`;
+  h += `<div class="foot"><p>Generators are paid the LMP at their own bus; loads pay the LMP at theirs. Total cost (the objective, ${money(R.obj)}) is what the offers say the energy costs, which is not what generators are paid.</p><p>The merchandising surplus comes from price differences across lines: losses (loads pay for energy that never arrives) and congestion. In US markets it funds financial transmission rights. The <b>Lines</b> tab splits it by line.</p></div>`;
+  return h;
+}
+
+function linesView() {
+  let h = `<div class="scroll"><table><thead><tr><th>Line</th><th class="n">Flow MW</th><th class="n">Sent MW</th><th class="n">Received MW</th><th class="n">Loss MW</th><th class="n">Limit</th><th>Loading</th><th class="n">Shadow price <span style="text-transform:none">μ</span></th><th>Status</th><th class="n">Surplus $/h</th></tr></thead><tbody>`;
+  S.lines.forEach((l, j) => {
+    const r = R.lines[j];
+    const dir = r.F >= 0 ? `${l.from}→${l.to}` : `${l.to}→${l.from}`;
+    const sent = r.F >= 0 ? r.send : -r.recv, recv = r.F >= 0 ? r.recv : -r.send;
+    const pct = Math.min(1, r.loading);
+    const cls = r.binding ? "b" : S.congestion && r.loading > 0.9 ? "w" : "";
+    const chip = !S.congestion ? '<span class="chip">limit off</span>' : r.binding ? '<span class="chip bind">binding</span>' : r.loading > 0.9 ? '<span class="chip near">near limit</span>' : '<span class="chip">ok</span>';
+    h += `<tr><td><b>${dir}</b></td><td class="n"><b>${f1(Math.abs(r.F))}</b></td><td class="n">${f1(sent)}</td><td class="n">${f1(recv)}</td><td class="n">${f2(r.loss)}</td><td class="n">${f1(l.rating)}</td><td><span class="bar ${cls}"><i style="width:${(pct * 100).toFixed(1)}%"></i></span> <span class="num small">${(r.loading * 100).toFixed(0)}%</span></td><td class="n">${r.binding ? money(r.mu) : "—"}</td><td>${chip}</td><td class="n">${money(r.surplus)}</td></tr>`;
+  });
+  const tl = R.lines.reduce((a, r) => a + r.loss, 0), ts = R.lines.reduce((a, r) => a + r.surplus, 0);
+  h += `<tr class="tot"><td>Total</td><td></td><td></td><td></td><td class="n">${f2(tl)}</td><td></td><td></td><td></td><td></td><td class="n">${money(ts)}</td></tr></tbody></table></div>`;
+  h += `<div class="foot"><p>Flows come from the DC power flow: F = (θ<sub>from</sub> − θ<sub>to</sub>) / x, in per unit. Each line loses r·F² (per unit), split half to each end, so the sent and received power differ by the loss.</p><p><b>μ</b> is the dual of the line-limit constraint: how much total cost would fall if the limit were 1 MW higher. <b>Surplus</b> = LMP at receiving end × MW received − LMP at sending end × MW sent; the column sums to the merchandising surplus.</p></div>`;
+  return h;
+}
+
+let plusCache = null;
+function plus1View() {
+  const key = JSON.stringify(S);
+  if (!plusCache || plusCache.key !== key) {
+    const rows = BUSES.map((b, i) => {
+      const st = JSON.parse(JSON.stringify(S)); st.loads[b] = (st.loads[b] || 0) + 1;
+      const r = E.solve(sysFrom(st), optsFrom(st));
+      if (!r.ok) return { b, ok: false };
+      const moves = S.gens.map((g, k) => [g.name, r.gens[k].p - R.gens[k].p]).filter(([, d]) => Math.abs(d) > 0.0005);
+      return { b, ok: true, obj: r.obj, d: r.obj - R.obj, lmp: R.lmp[i], moves, dLoss: r.totals.losses - R.totals.losses, dShed: r.totals.shed - R.totals.shed };
+    });
+    plusCache = { key, rows };
+  }
+  let h = `<div class="scroll"><table><thead><tr><th>Add 1 MW at</th><th class="n">LMP</th><th class="n">New total cost</th><th class="n">Change in cost</th><th class="n">Match</th><th>Generators that respond</th><th class="n">Change in losses MW</th></tr></thead><tbody>`;
+  plusCache.rows.forEach((r) => {
+    if (!r.ok) { h += `<tr><td>Bus ${r.b}</td><td colspan="6">No solution</td></tr>`; return; }
+    const ok = Math.abs(r.d - r.lmp) < 0.02;
+    const mv = r.moves.map(([n, d]) => `${n} ${signed(d, (v) => v.toFixed(3))}`).join(", ") + (r.dShed > 0.0005 ? `, unserved +${r.dShed.toFixed(3)}` : "");
+    h += `<tr><td><b>Bus ${r.b}</b></td><td class="n">${money(r.lmp)}</td><td class="n">${money(r.obj)}</td><td class="n"><b>${signed(r.d)}</b></td><td class="n">${ok ? '<span class="chip full">= LMP</span>' : '<span class="chip near">differs</span>'}</td><td>${mv || "—"}</td><td class="n">${signed(r.dLoss, (v) => v.toFixed(3))}</td></tr>`;
+  });
+  h += `</tbody></table></div>`;
+  h += `<div class="foot"><p>Each row re-solves the whole market with 1 MW more load at one bus, starting from total cost ${money(R.obj)}. The change in cost is the LMP, as on slides 42–46. The "generators that respond" column shows which marginal units cover the extra MW: with a binding line, more than one moves, in proportions set by the network.</p><p>A row marked "differs" means the extra MW pushed a unit past its capacity or a line past its limit, so the next MW costs something different. At that point the LMP is not unique: any value between the price just below and just above the breakpoint is a valid dual.</p></div>`;
+  return h;
+}
+
+function compareView() {
+  let h = `<div class="row" style="margin-bottom:10px"><button class="btn primary" id="pinBtn" type="button">Set current result as baseline</button>${baseline ? `<button class="btn" id="clearBase" type="button">Clear baseline</button><span class="small">Baseline: ${esc(baseline.label)}</span>` : ""}</div>`;
+  if (!baseline) return h + `<div class="foot"><p>Pin a result, change something (a limit, an offer, a load), and compare. Slide 48 does this for the 480 MW limit on line 1–5.</p></div>`;
+  const B = baseline.R;
+  const row = (label, a, b, fmt, unit = "") => {
+    const d = b - a;
+    return `<tr><td>${label}</td><td class="n">${fmt(a)}${unit}</td><td class="n">${fmt(b)}${unit}</td><td class="n ${d > 0.005 ? "pos" : d < -0.005 ? "neg" : ""}">${Math.abs(d) < 0.005 ? "—" : signed(d, fmt === money ? f2 : fmt)}</td></tr>`;
+  };
+  h += `<div class="scroll"><table><thead><tr><th>Quantity</th><th class="n">Baseline</th><th class="n">Current</th><th class="n">Change</th></tr></thead><tbody>`;
+  h += row("<b>Total cost</b>", B.obj, R.obj, money);
+  h += row("Losses MW", B.totals.losses, R.totals.losses, f1);
+  h += row("Merchandising surplus", B.totals.surplus, R.totals.surplus, money);
+  BUSES.forEach((b, i) => (h += row(`LMP bus ${b}`, B.lmp[i], R.lmp[i], money)));
+  S.gens.forEach((g, k) => (h += row(`${esc(g.name)} dispatch MW`, B.gens[k].p, R.gens[k].p, f1)));
+  S.lines.forEach((l, j) => (h += row(`Flow ${lineName(l)} MW`, B.lines[j].F, R.lines[j].F, f1)));
+  h += `</tbody></table></div><div class="foot"><p>Flows are signed: positive in the from→to direction listed.</p></div>`;
+  return h;
+}
+
+/* ---------- formulation ---------- */
+function lpView() {
+  const sys = sysFrom(S), opt = optsFrom(S);
+  const F0 = R && R.ok && S.losses ? R.lines.map((l) => l.F) : S.lines.map(() => 0);
+  const m = E.buildModel(sys, opt, F0);
+  const vn = (n) => {
+    const k = +n.slice(1);
+    if (n[0] === "g") return `P_${S.gens[k].name}`;
+    if (n[0] === "s") return `U_${BUSES[k]}`;
+    if (n[0] === "t") return `θ_${BUSES[k]}`;
+    if (n[0] === "f") return `F_${S.lines[k].from}${S.lines[k].to}`;
+    return n;
+  };
+  const num = (v) => { const a = Math.abs(v); return a === 1 ? "" : (+a.toPrecision(6)).toString() + " "; };
+  const expr = (pairs) => pairs.filter(([, c]) => Math.abs(c) > 1e-12).map(([n, c], i) => `${c < 0 ? (i ? " − " : "−") : i ? " + " : ""}${num(c)}${vn(n)}`).join("") || "0";
+  let objPairs = m.vars.filter((v) => v.c !== 0).map((v) => [v.name, v.c]);
+  let t = `<span class="c">// Minimise the as-offered cost of energy (plus unserved load at VOLL)</span>\n<span class="k">min</span>  ${expr(objPairs)}\n\n<span class="k">subject to</span>\n`;
+  t += `<span class="c">// Power balance at each bus. Dual variable λ_i = LMP_i</span>\n`;
+  m.rows.filter((r) => r.name.startsWith("bal")).forEach((r) => {
+    const i = +r.name.slice(3);
+    t += `  bal_${BUSES[i]}:  ${expr(Object.entries(r.coefs))} = ${+r.rhs.toPrecision(7)}   <span class="c">[λ = ${R && R.ok ? money(R.lmp[i]) : "?"}]</span>\n`;
+  });
+  t += `\n<span class="c">// DC power flow: F = 100 (θ_from − θ_to) / x   (MW, θ in radians, θ_1 = 0)</span>\n`;
+  m.rows.filter((r) => r.name.startsWith("flow")).forEach((r) => (t += `  ${expr(Object.entries(r.coefs))} = 0\n`));
+  if (S.congestion) {
+    t += `\n<span class="c">// Line limits. Dual variable μ ≥ 0 when binding</span>\n`;
+    S.lines.forEach((l, j) => {
+      const mu = R && R.ok && R.lines[j].binding ? `   <span class="c">[μ = ${money(R.lines[j].mu)}, binding]</span>` : "";
+      t += `  −${f1(l.rating).replace(".0", "")} ≤ F_${l.from}${l.to} ≤ ${f1(l.rating).replace(".0", "")}${mu}\n`;
+    });
+  }
+  t += `\n<span class="c">// Generator limits${Object.values(S.loads).some((d) => d > 0) ? " and unserved load" : ""}</span>\n`;
+  S.gens.forEach((g) => (t += `  0 ≤ P_${g.name} ≤ ${f1(g.cap).replace(".0", "")}\n`));
+  BUSES.forEach((b) => { if ((S.loads[b] || 0) > 0) t += `  0 ≤ U_${b} ≤ ${f1(S.loads[b]).replace(".0", "")}\n`; });
+  let h = `<pre class="lp">${t}</pre>`;
+  h += `<div class="foot"><p>This is the linear program the tool solves, written with the current numbers. Its Lagrangian is L = Σ c·P + Σ<sub>i</sub> λ<sub>i</sub>(D<sub>i</sub> − injections<sub>i</sub>) + Σ μ(F − F<sup>max</sup>) + …, so ∂L/∂D<sub>i</sub> = λ<sub>i</sub>: the LMP is the multiplier on bus i's balance.</p>`;
+  if (S.losses) h += `<p>With losses on, each line's loss r·F² is linearised around the previous solution's flow F⁰ as r(2F⁰F − F⁰²), with half assigned to each end. That is where the extra coefficients on F and the constants on the right-hand side come from. The LP is re-solved until the flows stop changing (${R && R.ok ? R.iterations : "?"} iterations here); the duals of the final LP are the LMPs.</p>`;
+  h += `<p>U is unserved load, priced at the value of lost load ($${f2(S.voll)}/MWh), so the problem always has a solution.</p></div>`;
+  return h;
+}
+
+/* ---------- header sync & events ---------- */
+function syncHeader() {
+  const sel = $("preset");
+  const base = presetId.replace("*", "");
+  sel.innerHTML = PRESETS.map((p) => `<option value="${p.id}">${esc(p.name)}${presetId === p.id + "*" ? " (edited)" : ""}</option>`).join("") + (presetId === "custom" ? `<option value="custom">Custom scenario</option>` : "");
+  sel.value = PRESETS.some((p) => p.id === base) ? base : "custom";
+  const p = PRESETS.find((x) => x.id === base);
+  $("presetDesc").textContent = p ? (p.desc + (presetId.endsWith("*") ? " (You have edited this scenario; Reset scenario restores it.)" : "")).trim() : "Custom scenario.";
+  $("presetDesc").hidden = !$("presetDesc").textContent;
+  $("optLoss").checked = S.losses; $("optCong").checked = S.congestion; $("optHide").checked = hidden;
+  $("refBus").innerHTML = BUSES.map((b) => `<option value="${b}">Bus ${b}</option>`).join("");
+  $("refBus").value = S.ref; $("voll").value = S.voll;
+}
+function renderAll(inputsToo) {
+  drawNet(); drawKpis(); drawStatus(); drawOut();
+  if (inputsToo) drawInputs();
+  save();
+}
+let timer = null;
+function schedule() { clearTimeout(timer); timer = setTimeout(() => { solveNow(); renderAll(false); }, 120); }
+function full() { solveNow(); syncHeader(); renderAll(true); }
+
+$("preset").addEventListener("change", (e) => { if (e.target.value !== "custom") { applyPreset(e.target.value); full(); } });
+$("resetBtn").addEventListener("click", () => { const id = presetId.replace("*", ""); if (PRESETS.some((p) => p.id === id)) applyPreset(id); else applyPreset("p30"); full(); });
+$("optLoss").addEventListener("change", (e) => { S.losses = e.target.checked; markCustom(); schedule(); });
+$("optCong").addEventListener("change", (e) => { S.congestion = e.target.checked; markCustom(); schedule(); });
+$("optHide").addEventListener("change", (e) => { hidden = e.target.checked; revealed = false; renderAll(false); });
+$("revealBtn").addEventListener("click", () => { revealed = true; renderAll(false); });
+$("refBus").addEventListener("change", (e) => { S.ref = +e.target.value; schedule(); });
+$("voll").addEventListener("input", (e) => { const v = parseFloat(e.target.value); if (v > 0) { S.voll = v; markCustom(); schedule(); } });
+$("inBody").addEventListener("input", onInput);
+document.querySelectorAll("#inTabs .tab").forEach((t) => t.addEventListener("click", () => { inTab = t.dataset.tab; drawInputs(); save(); }));
+document.querySelectorAll("#outTabs .tab").forEach((t) => t.addEventListener("click", () => { outTab = t.dataset.tab; drawOut(); save(); }));
+$("outBody").addEventListener("click", (e) => {
+  if (e.target.id === "pinBtn" && R && R.ok) { const p = PRESETS.find((x) => x.id === presetId.replace("*", "")); baseline = { R: JSON.parse(JSON.stringify(R)), label: (p ? p.name : "custom") + (presetId.endsWith("*") ? " (edited)" : "") }; drawOut(); }
+  if (e.target.id === "clearBase") { baseline = null; drawOut(); }
+});
+$("net").addEventListener("click", (e) => {
+  const g = e.target.closest("[data-focus]"); if (!g) return;
+  const [kind, id] = g.dataset.focus.split(":");
+  const tab = kind === "gen" ? "gens" : kind === "line" ? "lines" : "loads";
+  inTab = tab; drawInputs();
+  const rowId = kind === "gen" ? `row-gen-${id}` : kind === "line" ? `row-line-${id}` : `row-load-${id}`;
+  const row = $(rowId);
+  if (row) { row.classList.add("hl"); const inp = row.querySelector("input"); if (inp) inp.focus({ preventScroll: false }); setTimeout(() => row.classList.remove("hl"), 1200); }
+});
+
+// share codes
+function encode() { return btoa(unescape(encodeURIComponent(JSON.stringify({ v: 1, S, presetId })))); }
+$("codeBtn").addEventListener("click", () => { const p = $("codePanel"); p.hidden = !p.hidden; if (!p.hidden) { $("codeText").value = encode(); $("codeMsg").textContent = ""; } });
+$("copyCode").addEventListener("click", () => {
+  const ta = $("codeText"); ta.value = encode();
+  const done = () => ($("codeMsg").textContent = "Copied.");
+  try { navigator.clipboard.writeText(ta.value).then(done, () => { ta.select(); $("codeMsg").textContent = "Selected. Press Ctrl/Cmd+C to copy."; }); }
+  catch (err) { ta.select(); $("codeMsg").textContent = "Selected. Press Ctrl/Cmd+C to copy."; }
+});
+$("loadCode").addEventListener("click", () => {
+  try {
+    const d = JSON.parse(decodeURIComponent(escape(atob($("codeText").value.trim()))));
+    if (!d.S || !Array.isArray(d.S.gens) || d.S.gens.length !== 4 || !Array.isArray(d.S.lines) || d.S.lines.length !== 6) throw new Error("shape");
+    S = d.S; presetId = d.presetId || "custom"; revealed = false; full();
+    $("codeMsg").textContent = "Scenario loaded.";
+  } catch (err) { $("codeMsg").textContent = "That code could not be read. Check that it was copied completely."; }
+});
+
+load();
+full();
+})();
+</script>
+</body></html>
