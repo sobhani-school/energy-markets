@@ -1,5 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0;font:14px system-ui}[hidden]{display:none!important}</style></head><body><title>Network LMP Lab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<script data-goatcounter="https://masoudsobhani.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <style>
@@ -232,8 +233,8 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
     <label class="small" for="library">Start from</label>
     <select id="library">
       <option value="">Choose a network…</option>
-      <option value="ks3">Three-bus example</option>
-      <option value="pa5">Five-bus example</option>
+      <option value="ks3">Three-bus example (Kirschen &amp; Strbac, slides 75–98)</option>
+      <option value="pa5">Five-bus example (PA Consulting, slides 29–51)</option>
       <option value="blank">Blank canvas</option>
     </select>
     <button class="btn" id="undoBtn" type="button" title="Undo (Ctrl+Z)">Undo</button>
@@ -1484,17 +1485,8 @@ refresh(true);
 </script>
 <script>
 /* ---- Usage analytics (GoatCounter: no cookies, no personal data) ----
-   Set GC_CODE to your GoatCounter site code, e.g. "masoud-lmp" for masoud-lmp.goatcounter.com.
-   While it is left as "YOUR-CODE", nothing is loaded or sent. */
+   Page views come from the GoatCounter script tag in <head>; this block adds click events. */
 (function () {
-  const GC_CODE = "YOUR-CODE";
-  if (!GC_CODE || GC_CODE === "masoudsobhani") return;
-  const s = document.createElement("script");
-  s.async = true;
-  s.src = "https://gc.zgo.at/count.js";
-  s.dataset.goatcounter = "https://" + GC_CODE + ".goatcounter.com/count";
-  document.head.appendChild(s);
-
   function track(name, title) {
     try {
       if (window.goatcounter && window.goatcounter.count) {
