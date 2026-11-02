@@ -1482,4 +1482,47 @@ $("modeBuild").setAttribute("aria-pressed", mode === "build"); $("modeMarket").s
 refresh(true);
 })();
 </script>
+<script>
+/* ---- Usage analytics (GoatCounter: no cookies, no personal data) ----
+   Set GC_CODE to your GoatCounter site code, e.g. "masoud-lmp" for masoud-lmp.goatcounter.com.
+   While it is left as "YOUR-CODE", nothing is loaded or sent. */
+(function () {
+  const GC_CODE = "YOUR-CODE";
+  if (!GC_CODE || GC_CODE === "masoudsobhani") return;
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = "https://gc.zgo.at/count.js";
+  s.dataset.goatcounter = "https://" + GC_CODE + ".goatcounter.com/count";
+  document.head.appendChild(s);
+
+  function track(name, title) {
+    try {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: name, title: title || name, event: true });
+      }
+    } catch (e) { /* analytics must never break the app */ }
+  }
+  const on = (id, ev, fn) => { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
+
+  on("modeBuild", "click", () => track("mode-build", "Mode: Build network"));
+  on("modeMarket", "click", () => track("mode-market", "Mode: Run market"));
+  // capture phase on document: runs before the app resets the picker
+  document.addEventListener("change", (e) => {
+    if (!e.target || e.target.id !== "library") return;
+    const v = e.target.value; if (!v) return;
+    const label = e.target.selectedOptions[0] ? e.target.selectedOptions[0].textContent : v;
+    track("network-" + v, "Start from: " + label);
+  }, true);
+  on("revealBtn", "click", () => track("reveal-results", "Reveal results"));
+  on("shareBtn", "click", () => track("save-load-open", "Save / load opened"));
+  on("copyCode", "click", () => track("code-copy", "Copy network code"));
+  on("loadCode", "click", () => track("code-load", "Load network code"));
+  on("dlFile", "click", () => track("file-download", "Download .json"));
+  on("fileIn", "change", () => track("file-open", "Open .json file"));
+  on("tabs", "click", (e) => {
+    const b = e.target.closest("[data-tab]"); if (!b) return;
+    track("tab-" + b.dataset.tab, "Tab: " + b.textContent.trim());
+  });
+})();
+</script>
 </body></html>
