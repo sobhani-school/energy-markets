@@ -172,54 +172,144 @@ pre.lp .c { color: var(--muted); } pre.lp .k { color: var(--accent); font-weight
 .sheet { display: grid; gap: 8px; }
 .sheet textarea { width: 100%; min-height: 70px; font-family: var(--f-mono); font-size: 12px; background: var(--sunk); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px; resize: vertical; }
 .confirm { border: 1px solid var(--bind); background: color-mix(in srgb, var(--bind) 8%, var(--panel)); }
-/* Banner (Torque: brand-softer #fff8db surface, #ffdc2b brand, JetBrains Mono) */
-header.top.banner { position: relative; overflow: hidden; display: flex; flex-wrap: nowrap; align-items: center; justify-content: flex-start; gap: 32px; background: #fff8db; color: #111118; border: 1px solid #fce588; border-radius: 4px; padding: 40px 48px; min-height: 232px; box-sizing: border-box; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+/* Banner (Torque: fg-navy #1e3a5f surface, #ffdc2b brand, JetBrains Mono) */
+header.top.banner { position: relative; overflow: hidden; display: flex; flex-wrap: nowrap; align-items: center; justify-content: flex-start; gap: 32px; background: #1e3a5f; color: #ffffff; border: 0; border-radius: 4px; padding: 40px 48px; min-height: 232px; box-sizing: border-box; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
 .banner-net { position: absolute; right: 0; top: 0; height: 100%; width: 460px; max-width: 45%; pointer-events: none; }
-.banner-avatar { position: relative; flex: none; width: 128px; height: 128px; border-radius: 9999px; box-shadow: 0 0 0 4px #fff8db, 0 0 0 5px #e6d68a; }
+.banner-logo { position: relative; flex: none; width: 128px; height: 128px; display: block; }
 .banner-text { position: relative; display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 640px; }
 .banner-eyebrow { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.08em; color: #1e3a5f; }
-header.banner h1 { font-family: inherit; font-size: 44px; line-height: 52px; font-weight: 400; letter-spacing: -0.01em; color: #111118; }
-header.banner .sub { font-size: 15px; line-height: 24px; color: #3f3f4b; margin: 0; }
-header.banner .modes { align-self: flex-start; margin-top: 8px; background: #ffffff; border: 1px solid #dddde8; border-radius: 4px; gap: 2px; }
-header.banner .modes button { font-family: inherit; font-size: 14px; line-height: 20px; border-radius: 2px; padding: 6px 14px; color: #3f3f4b; }
-header.banner .modes button:hover { color: #111118; }
+header.banner h1 { font-family: inherit; font-size: 44px; line-height: 52px; font-weight: 400; letter-spacing: -0.01em; color: #ffffff; }
+header.banner .banner-eyebrow { color: #ffdc2b; }
+header.banner .sub { font-size: 15px; line-height: 24px; color: #d3dde9; margin: 0; }
+header.banner .modes { align-self: flex-start; margin-top: 8px; background: transparent; border: 1px solid #4a6587; border-radius: 4px; gap: 2px; }
+header.banner .modes button { font-family: inherit; font-size: 14px; line-height: 20px; border-radius: 2px; padding: 6px 14px; color: #e6ecf3; }
+header.banner .modes button:hover:not([aria-pressed="true"]) { color: #ffffff; background: rgba(255,255,255,.08); }
 header.banner .modes button[aria-pressed="true"] { background: #ffdc2b; color: #111118; }
 header.banner .modes .stepn { font-family: inherit; font-size: 12px; opacity: .7; }
-header.banner :focus-visible { outline-color: #1e3a5f; }
+header.banner :focus-visible { outline-color: #ffdc2b; }
 @media (max-width: 720px) {
   header.top.banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 28px 20px; min-height: 0; }
   .banner-net { height: 120px; width: 240px; }
-  .banner-avatar { width: 80px; height: 80px; box-shadow: 0 0 0 3px #fff8db, 0 0 0 4px #e6d68a; }
+  .banner-logo { width: 80px; height: 80px; }
   header.banner h1 { font-size: 30px; line-height: 38px; }
   header.banner .sub { font-size: 14px; line-height: 22px; }
   header.banner .modes { display: flex; align-self: stretch; }
   header.banner .modes button { flex: 1; padding: 10px 8px; font-size: 13px; }
 }
+/* ---- added: periods, real-time, charts, guide ---- */
+:root { --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767; } }
+:root[data-theme="dark"] { --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767; }
+.viewbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 8px; padding: 6px 8px; background: var(--brand-softer); border: 1px solid var(--brand-medium); border-radius: var(--radius); }
+.viewbar .lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--panel); padding: 2px; gap: 2px; }
+.seg button { border: 0; background: none; padding: 3px 10px; border-radius: 2px; cursor: pointer; font-weight: 600; font-size: 12.5px; color: var(--body); }
+.seg button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); }
+.chip.ramp { background: color-mix(in srgb, var(--s7) 16%, transparent); color: var(--s7); }
+.chip.out { background: var(--ink); color: var(--panel); }
+.blocks { display: grid; grid-template-columns: 1fr 1fr auto; gap: 4px 6px; align-items: center; margin-top: 6px; }
+.blocks .h { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.blocks input { width: 100%; background: var(--sunk); border: 1px solid var(--rule); border-radius: 4px; padding: 4px 6px; text-align: right; }
+.blocks input.bad { border-color: var(--bind); }
+.xbtn { border: 1px solid var(--rule); background: var(--panel); border-radius: 4px; cursor: pointer; padding: 2px 7px; color: var(--muted); }
+.xbtn:hover { color: var(--bind); border-color: var(--bind); }
+.subh { font-size: 12px; font-weight: 600; color: var(--ink); margin-top: 14px; }
+.evt { display: flex; align-items: center; gap: 8px; font-size: 12.5px; padding: 5px 8px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--sunk); }
+.evt span { flex: 1; }
+.chart { position: relative; margin-top: 8px; max-width: 860px; }
+.ctrl .tog input { min-width: 0; padding: 0; background: var(--chip-bg); }
+.ctrl .tog input:checked { background: var(--brand); }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart svg text { font-family: var(--f-mono); fill: var(--muted); font-size: 11px; }
+.chart .tip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius); padding: 6px 8px; font-size: 12px; color: var(--ink); box-shadow: 0 2px 8px rgba(0,0,0,.12); white-space: nowrap; z-index: 2; }
+.chart .tip i { display: inline-block; width: 10px; height: 2px; vertical-align: middle; margin-right: 6px; }
+.ctrl { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: end; }
+.ctrl label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+.ctrl input, .ctrl select { background: var(--sunk); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 7px; min-width: 90px; }
+.score { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; margin: 8px 0; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px; align-items: start; }
+.guide { display: grid; gap: 14px; }
+.ghead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 20px 24px; }
+.gtitle { font-size: 26px; font-weight: 400; color: var(--ink); text-transform: none; letter-spacing: -0.01em; margin-top: 4px; line-height: 1.25; }
+.gsub { margin: 6px 0 0; color: var(--muted); max-width: 70ch; }
+.glayout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 860px) { .glayout { grid-template-columns: minmax(0, 1fr); } .gnav { position: static !important; } }
+.gnav { position: sticky; top: 12px; display: grid; gap: 2px; padding: 12px; }
+.gnav-h { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 6px 8px; }
+.gnav a { display: block; padding: 5px 8px; border-radius: 4px; color: var(--body); text-decoration: none; font-size: 13px; border-left: 2px solid transparent; }
+.gnav a:hover { background: var(--sunk); color: var(--ink); }
+.gnav a.on { background: var(--brand-softer); border-left-color: var(--brand-strong); color: var(--ink); font-weight: 600; }
+.gbody { display: grid; gap: 14px; min-width: 0; }
+.gcard { padding: 20px 24px; scroll-margin-top: 12px; }
+.gcard h3 { font-size: 19px; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+.gcard p { margin: 8px 0; max-width: 80ch; line-height: 1.65; }
+.gtag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 2px; background: var(--brand); color: var(--brand-ink); }
+.gsteps { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin: 4px 0 12px; }
+.gstep { display: flex; gap: 10px; padding: 12px; background: var(--sunk); border: 1px solid var(--rule); border-radius: var(--radius); }
+.gstep p { margin: 4px 0 0; font-size: 13px; line-height: 1.5; }
+.gn { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.callout { margin-top: 12px; padding: 12px 14px; background: var(--brand-softer); border: 1px solid var(--brand-medium); border-left: 4px solid var(--brand-strong); border-radius: var(--radius); line-height: 1.6; max-width: 86ch; }
+.gtools { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin: 10px 0 14px; }
+.gtools > div { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; padding: 10px; border: 1px solid var(--rule); border-radius: var(--radius); }
+.gtools span { grid-column: 2; font-size: 12px; color: var(--muted); line-height: 1.4; }
+.guide kbd { font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 3px; padding: 1px 6px; color: var(--ink); background: var(--panel); }
+.ggrid3, .ggrid2 { display: grid; gap: 10px; margin: 8px 0; }
+.ggrid3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.ggrid2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.gmini { padding: 12px 14px; background: var(--sunk); border: 1px solid var(--rule); border-radius: var(--radius); }
+.gmini h4 { margin: 0 0 6px; font-size: 14px; color: var(--ink); }
+.gmini p { margin: 0; font-size: 13px; }
+.gmini ul, .glist { margin: 0; padding-left: 18px; }
+.gmini li { font-size: 13px; margin: 4px 0; line-height: 1.5; }
+.glist li { margin: 7px 0; line-height: 1.6; max-width: 80ch; }
+.gnote { font-size: 13px; color: var(--muted); }
+.gdl { display: grid; grid-template-columns: 150px minmax(0, 1fr); margin: 0; border-top: 1px solid var(--rule); }
+.gdl dt, .gdl dd { margin: 0; padding: 9px 4px; border-bottom: 1px solid var(--rule); }
+.gdl dt { font-weight: 600; color: var(--ink); }
+@media (max-width: 560px) { .gdl { grid-template-columns: 1fr; } .gdl dt { border-bottom: 0; padding-bottom: 0; } }
+.gkey { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px 16px; margin: 4px 0 12px; font-size: 13px; }
+.gkey > div { display: flex; align-items: center; gap: 10px; }
+.gdot { width: 16px; height: 16px; border-radius: 50%; flex: none; }
+.gbar { width: 24px; height: 4px; border-radius: 2px; flex: none; }
+.gchips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.gchips span { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--chip-bg); color: var(--ink); }
+.gtabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; }
+.gtabs > div { padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--radius); display: grid; gap: 4px; align-content: start; }
+.gtabs span { font-size: 13px; color: var(--body); line-height: 1.5; }
+body.show-guide .wrap > :not(header):not(#guide) { display: none !important; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
 <div class="wrap">
   <header class="top banner">
     <svg class="banner-net" aria-hidden="true" viewBox="0 0 460 232" preserveAspectRatio="xMaxYMid meet">
-      <g stroke="#e6d68a" stroke-width="1.5" fill="none">
+      <g stroke="#4a6587" stroke-width="1.5" fill="none">
         <line x1="70" y1="70" x2="200" y2="40"/><line x1="200" y1="40" x2="340" y2="80"/>
         <line x1="70" y1="70" x2="130" y2="170"/><line x1="130" y1="170" x2="270" y2="180"/>
         <line x1="270" y1="180" x2="410" y2="150"/><line x1="200" y1="40" x2="270" y2="180"/>
       </g>
-      <line x1="340" y1="80" x2="410" y2="150" stroke="#d4a017" stroke-width="2.5"/>
-      <g fill="#ffffff" stroke="#c9b25a" stroke-width="1.5">
+      <line x1="340" y1="80" x2="410" y2="150" stroke="#ffdc2b" stroke-width="2.5"/>
+      <g fill="#1e3a5f" stroke="#7d93ad" stroke-width="1.5">
         <circle cx="70" cy="70" r="6"/><circle cx="200" cy="40" r="6"/><circle cx="130" cy="170" r="6"/>
         <circle cx="270" cy="180" r="6"/><circle cx="410" cy="150" r="6"/>
       </g>
-      <circle cx="340" cy="80" r="7" fill="#d4a017"/>
-      <g font-family="JetBrains Mono, monospace" font-size="11" fill="#62627a">
+      <circle cx="340" cy="80" r="7" fill="#ffdc2b"/>
+      <g font-family="JetBrains Mono, monospace" font-size="11" fill="#a9bbd0">
         <text x="58" y="54">B1</text><text x="190" y="24">B2</text><text x="352" y="72">B3</text>
         <text x="422" y="154">B4</text><text x="260" y="204">B5</text><text x="100" y="192">B6</text>
       </g>
     </svg>
-    <img class="banner-avatar" alt="" width="128" height="128" src="data:image/webp;base64,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">
+    <svg class="banner-logo" role="img" aria-label="Network LMP Lab logo" viewBox="0 0 128 128" width="128" height="128">
+      <circle cx="64" cy="64" r="62" fill="#ffffff"/>
+      <circle cx="64" cy="64" r="57" fill="none" stroke="#1e3a5f" stroke-width="5"/>
+      <path d="M64 30 L30 86 L98 86 Z" fill="none" stroke="#1e3a5f" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M69.6 45.9 L64.9 62.8 L75.2 62.8 L56.6 84.6 L61.5 69.3 L52.1 69.3 Z" fill="#ffdc2b" stroke="#111118" stroke-width="1.5" stroke-linejoin="round"/>
+      <g fill="#ffdc2b" stroke="#1e3a5f" stroke-width="4">
+        <circle cx="64" cy="30" r="10"/><circle cx="30" cy="86" r="10"/><circle cx="98" cy="86" r="10"/>
+      </g>
+    </svg>
     <div class="banner-text">
-      <div class="banner-eyebrow">ENERGY MARKETS · INTERACTIVE LAB</div>
+      <div class="banner-eyebrow">DR. MASOUD SOBHANI · ENERGY MARKETS</div>
       <h1>Network LMP Lab</h1>
       <div class="sub">Build a transmission network, then clear a nodal market on it.</div>
       <div class="modes" role="group" aria-label="Mode">
@@ -228,17 +318,163 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
       </div>
     </div>
   </header>
+  <section class="guide" id="guide" hidden aria-label="Instructions">
+    <div class="ghead panel">
+      <div>
+        <div class="banner-eyebrow">INSTRUCTIONS</div>
+        <h2 class="gtitle">How to use Network LMP Lab</h2>
+        <p class="gsub">Build a transmission network, clear a nodal market on it, and see how prices, flows and payments respond.</p>
+      </div>
+      <button class="btn primary" type="button" id="guideBack">Back to the lab</button>
+    </div>
+
+    <div class="glayout">
+      <nav class="gnav panel" aria-label="Contents">
+        <div class="gnav-h">Contents</div>
+        <a href="#g-start">Quick start</a>
+        <a href="#g-build">Build the network</a>
+        <a href="#g-market">Market settings</a>
+        <a href="#g-read">Reading the diagram</a>
+        <a href="#g-periods">Periods and ramps</a>
+        <a href="#g-dart">Day-ahead and real-time</a>
+        <a href="#g-tabs">Result tabs</a>
+        <a href="#g-save">Saving and sharing</a>
+        <a href="#g-model">Model assumptions</a>
+      </nav>
+
+      <div class="gbody">
+        <section class="gcard panel" id="g-start">
+          <h3>Quick start</h3>
+          <div class="gsteps">
+            <div class="gstep"><span class="gn">1</span><div><b>Choose a network</b><p>Pick one from <b>Start from</b>, or start with a <b>Blank canvas</b>.</p></div></div>
+            <div class="gstep"><span class="gn">2</span><div><b>Run the market</b><p>Press <b>2 Run market</b>. Prices and flows appear right away.</p></div></div>
+            <div class="gstep"><span class="gn">3</span><div><b>Change something</b><p>Click a bus, line or generator and edit it on the right. The market re-solves as you type.</p></div></div>
+            <div class="gstep"><span class="gn">4</span><div><b>Read the results</b><p>Use the tabs under the diagram for prices, dispatch, flows and payments.</p></div></div>
+          </div>
+          <div class="callout"><b>What the tool solves.</b> The cheapest dispatch that meets every load without breaking any line limit (a DC optimal power flow). Each bus's <b>LMP</b> is the dual variable of its power-balance constraint: how much total cost rises if that bus's load rises by 1 MW.</div>
+        </section>
+
+        <section class="gcard panel" id="g-build">
+          <h3>Build the network <span class="gtag">Step 1</span></h3>
+          <p>Choose a drawing tool above the diagram, or press its key.</p>
+          <div class="gtools">
+            <div><kbd>V</kbd><b>Select / move</b><span>Select an element; drag a bus to move it</span></div>
+            <div><kbd>B</kbd><b>Add bus</b><span>Click an empty spot (up to 30)</span></div>
+            <div><kbd>L</kbd><b>Add line</b><span>Click one bus, then another (up to 60)</span></div>
+            <div><kbd>G</kbd><b>Add generator</b><span>Click a bus (up to 40)</span></div>
+            <div><kbd>D</kbd><b>Delete</b><span>Click an element; <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes</span></div>
+          </div>
+          <div class="ggrid3">
+            <div class="gmini"><h4>Buses</h4><ul><li>Load in MW.</li><li>Optional <b>demand bids</b>: blocks of load (MW at a price), served only when the LMP is at or below the bid.</li><li>Bid prices can't rise from one block to the next.</li></ul></div>
+            <div class="gmini"><h4>Lines</h4><ul><li>Reactance <i>x</i> (per unit, 100 MVA base) decides how flow splits between paths.</li><li>Resistance <i>r</i> matters only with <b>Losses</b> on.</li><li>Limit in MW, enforced with <b>Line limits</b> on.</li></ul></div>
+            <div class="gmini"><h4>Generators</h4><ul><li>An <b>offer curve</b> of up to 5 blocks (MW at a price).</li><li>Block prices can't fall from one block to the next.</li><li>With several periods: an optional <b>ramp limit</b> in MW per period.</li></ul></div>
+          </div>
+          <p class="gnote">You can also edit everything in the <b>Buses</b>, <b>Lines</b> and <b>Generators</b> tables. <b>Network checks</b> on the right lists anything that stops the market from running; click a message to jump to the element.</p>
+        </section>
+
+        <section class="gcard panel" id="g-market">
+          <h3>Market settings <span class="gtag">Step 2</span></h3>
+          <dl class="gdl">
+            <dt>Line limits</dt><dd>Enforces each line's MW limit. A binding line creates congestion, and LMPs then differ by bus.</dd>
+            <dt>Losses</dt><dd>Adds I²R losses on each line. LMPs gain a loss component.</dd>
+            <dt>Reference bus</dt><dd>Its LMP is the energy component. Changing it shifts value between the energy, loss and congestion parts but never changes the LMPs.</dd>
+            <dt>VOLL</dt><dd>Value of lost load. Load that can't be served is priced at VOLL.</dd>
+            <dt>Periods</dt><dd>How many periods the day has, from 1 to 24.</dd>
+            <dt>Settlement</dt><dd><i>Single market</i>, or <i>Day-ahead + real-time</i>.</dd>
+          </dl>
+        </section>
+
+        <section class="gcard panel" id="g-read">
+          <h3>Reading the diagram</h3>
+          <div class="gkey">
+            <div><span class="gdot" style="background:var(--good)"></span>Generator at capacity</div>
+            <div><span class="gdot" style="background:var(--brand)"></span>Marginal generator (sets a price)</div>
+            <div><span class="gdot" style="background:var(--s7)"></span>Held by a ramp limit</div>
+            <div><span class="gdot" style="background:var(--chip-bg);border:1px solid var(--rule)"></span>Generator off</div>
+            <div><span class="gbar" style="background:var(--bind)"></span>Line at its limit (binding)</div>
+            <div><span class="gbar" style="background:repeating-linear-gradient(90deg,var(--muted) 0 5px,transparent 5px 9px)"></span>Out of service</div>
+          </div>
+          <ul class="glist">
+            <li>Bus colour shows the LMP, from low (blue) to high (red). <b>Colour buses by</b>, under the diagram, switches to the energy, congestion or loss part.</li>
+            <li>Line width grows with flow; arrows show its direction.</li>
+            <li>The boxes under the diagram show total cost, generation, load, losses and merchandising surplus.</li>
+          </ul>
+        </section>
+
+        <section class="gcard panel" id="g-periods">
+          <h3>Periods and ramp limits</h3>
+          <ul class="glist">
+            <li>Set <b>Periods</b> above 1 and the <b>Buses</b> tab shows a <b>load profile</b>: one multiplier per period, applied to every bus's base load.</li>
+            <li>Type into a period column to set one bus's load by hand. <b>Reset all buses to base × profile</b> undoes that.</li>
+            <li>Use the <b>Period</b> buttons above the diagram to step through the day.</li>
+          </ul>
+          <div class="callout">All periods clear together in one optimization. A unit that can't ramp fast enough links neighbouring periods, so it can move prices both before and after the period where it binds.</div>
+        </section>
+
+        <section class="gcard panel" id="g-dart">
+          <h3>Day-ahead and real-time</h3>
+          <p>Set <b>Settlement</b> to <b>Day-ahead + real-time</b>. The market then clears twice. Switch the diagram between the two with the <b>Market</b> buttons above it.</p>
+          <div class="ggrid2">
+            <div class="gmini"><h4>Day-ahead</h4><p>Clears on the network exactly as you built it: the forecast.</p></div>
+            <div class="gmini"><h4>Real-time</h4><p>Clears again after the <b>Real-time events</b> in the panel on the right.</p></div>
+          </div>
+          <p><b>Adding an event:</b> choose a type, fill in its options, choose a period (or all periods), then press <b>Add event</b>.</p>
+          <div class="gchips"><span>Load change, all buses (%)</span><span>Load change at a bus (MW)</span><span>Random forecast error (± %)</span><span>Unit outage or derate</span><span>Line outage</span><span>Line derate</span></div>
+          <div class="callout"><b>Two-settlement rule.</b> Day-ahead MWh are paid at day-ahead LMPs. In real time, only the <i>deviation</i> from the day-ahead schedule settles, at the real-time LMP. A unit that trips after clearing day-ahead buys back its schedule at the real-time price.</div>
+        </section>
+
+        <section class="gcard panel" id="g-tabs">
+          <h3>Result tabs</h3>
+          <div class="gtabs">
+            <div><b>Prices</b><span>Each LMP split into energy, loss and congestion, with the marginal loss factor.</span></div>
+            <div><b>Dispatch &amp; settlement</b><span>Dispatch, revenue and profit by generator, and payments by load, for the selected period and market only.</span></div>
+            <div><b>Line flows</b><span>Flow, losses, loading, and the shadow price μ of each binding limit.</span></div>
+            <div><b>+1 MW test</b><span>Adds 1 MW at each bus in turn and shows that the change in cost equals the LMP.</span></div>
+            <div><b>Periods</b><span>LMP and dispatch across the day, with ramp-limited units marked. Shown with more than one period.</span></div>
+            <div><b>DA vs RT</b><span>Day-ahead and real-time prices side by side, the spread, and each generator's two settlements.</span></div>
+            <div><b>Settlement statement</b><span>The whole day for every participant, the ISO's surplus, and a check row that must be zero. Exports to CSV.</span></div>
+            <div><b>Compare</b><span>Pin a result as a baseline, change anything, and see what moved.</span></div>
+          </div>
+          <div class="callout"><b>Why two surplus numbers?</b> <b>Dispatch &amp; settlement</b> shows the merchandising surplus for one period of one market. The <b>Settlement statement</b> covers the whole day: the sum over periods, plus the real-time balancing surplus in two-settlement mode. With one period and a single market they are equal. The statement's "Where the ISO surplus comes from" table shows each piece.</div>
+        </section>
+
+        <section class="gcard panel" id="g-save">
+          <h3>Saving and sharing</h3>
+          <ul class="glist">
+            <li>Your work is kept in this browser between visits.</li>
+            <li><b>Save / load</b> gives a code with the whole network, its settings and real-time events. Share it with students, or paste one in to open it.</li>
+            <li>On the course website you can also download or open a .json file.</li>
+          </ul>
+        </section>
+
+        <section class="gcard panel" id="g-model">
+          <h3>Model assumptions</h3>
+          <ul class="glist">
+            <li><b>DC power flow:</b> voltages fixed at 1 pu, no reactive power.</li>
+            <li><b>One-hour periods</b>, so MW and MWh are equal in settlements.</li>
+            <li><b>Same offers</b> day-ahead and in real time. No unit commitment: no start-up costs or minimum outputs.</li>
+            <li><b>Ramp limits</b> are lifted between two periods when a unit's available capacity changes, such as during an outage.</li>
+            <li><b>Breakpoints:</b> if an LMP sits exactly at one, more than one price is valid. The +1 MW test flags these.</li>
+          </ul>
+          <div class="row" style="margin-top:14px"><button class="btn primary" type="button" id="guideBack2">Back to the lab</button></div>
+        </section>
+      </div>
+    </div>
+  </section>
 
   <div class="hrow">
     <label class="small" for="library">Start from</label>
     <select id="library">
       <option value="">Choose a network…</option>
-      <option value="ks3">Three-bus example (Kirschen &amp; Strbac, slides 75–98)</option>
-      <option value="pa5">Five-bus example (PA Consulting, slides 29–51)</option>
       <option value="blank">Blank canvas</option>
+      <option value="ks3">Three-bus example (Kirschen &amp; Strbac)</option>
+      <option value="pa5">Five-bus example</option>
+      <option value="pa5day">Five-bus day: 4 periods, offer blocks, ramps, day-ahead + real-time</option>
+      <option value="ieee14">IEEE 14-bus test system (MATPOWER data, teaching offers and limits)</option>
     </select>
     <button class="btn" id="undoBtn" type="button" title="Undo (Ctrl+Z)">Undo</button>
     <span class="spacer" style="flex:1"></span>
+    <button class="btn" id="guideBtn" type="button">Instructions</button>
     <button class="btn" id="shareBtn" type="button">Save / load</button>
   </div>
   <div class="panel confirm" id="confirmBox" hidden>
@@ -281,6 +517,11 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
         <label class="tog small" style="margin-left:8px"><input type="checkbox" id="wideToggle"> Wide layout</label>
         <span class="small" style="flex:1 1 220px;margin-left:12px">Drag empty space to pan · Ctrl + scroll (or pinch) to zoom</span>
       </div>
+      <div class="viewbar" id="viewbar" hidden>
+        <span class="lbl">Period</span><span class="seg" id="perSeg"></span>
+        <span id="mktWrap" class="row"><span class="lbl">Market</span><span class="seg" id="mktSeg"><button type="button" data-m="da">Day-ahead</button><button type="button" data-m="rt">Real-time</button></span></span>
+        <span class="small" id="viewNote"></span>
+      </div>
       <div class="canvas-wrap">
         <svg class="net tool-select" id="net" viewBox="0 0 1000 620" role="img" aria-label="Network diagram"></svg>
       </div>
@@ -291,17 +532,24 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
     <aside class="side">
       <section class="panel settings" aria-label="Market settings" id="settingsPanel">
         <h2>Market settings</h2>
-        <label class="tog"><input type="checkbox" id="optLoss"> Losses</label>
         <label class="tog"><input type="checkbox" id="optCong"> Line limits</label>
-        <label class="tog"><input type="checkbox" id="optHide"> Hide results</label>
-        <button class="btn primary" id="revealBtn" type="button" hidden>Reveal results</button>
+        <label class="tog"><input type="checkbox" id="optLoss"> Losses</label>
         <div class="form">
           <label for="refBus">Reference bus</label><select id="refBus"></select>
           <label for="voll">VOLL <span class="unit">$/MWh</span></label><input id="voll" type="number" step="50" min="1">
+          <label for="optPeriods">Periods</label><select id="optPeriods"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="12">12</option><option value="24">24</option></select>
+          <label for="optMarket">Settlement</label><select id="optMarket"><option value="single">Single market</option><option value="dart">Day-ahead + real-time</option></select>
         </div>
         <div><span class="status" id="status">Solving…</span></div>
       </section>
       <section class="panel insp" aria-label="Selected element" id="insp"></section>
+      <section class="panel" aria-label="Real-time events" id="rtPanel" hidden>
+        <h2 style="margin-bottom:6px">Real-time events</h2>
+        <div class="small" style="margin-bottom:8px">The day-ahead market clears on the network as built. Real time re-clears after these changes, and deviations settle at real-time prices.</div>
+        <div id="rtList" style="display:grid;gap:6px"></div>
+        <div class="form" style="margin-top:10px" id="rtForm"></div>
+        <div class="row" style="margin-top:8px"><button class="btn sm primary" type="button" id="rtAdd">Add event</button></div>
+      </section>
       <section class="panel" aria-label="Checks" id="checksPanel">
         <h2 style="margin-bottom:8px">Network checks</h2>
         <div class="issues" id="issues"></div>
@@ -318,9 +566,9 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
 
 <script>
 /* Network LMP engine (general topology).
-   DC optimal power flow in angle form, optional line limits and successive
-   linearised I^2R losses. Solved with a bounded-variable primal simplex
-   (Dantzig pricing, Bland's rule fallback against cycling) that returns duals.
+   Multi-period DC optimal power flow in angle form: stepwise offer blocks, demand bids,
+   ramp limits, line/unit outages, optional line limits and successive linearised I^2R losses.
+   Solved with a bounded-variable primal simplex    (Dantzig pricing, Bland's rule fallback against cycling) that returns duals.
    Units: MW, $/MWh; x and r in per unit on a 100 MVA base. */
 (function (root) {
   const BASE = 100;
@@ -463,66 +711,6 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
     return M.map((row, k) => row[m] / row[k]);
   }
 
-  /* ---------- market model (angle form) ---------- */
-  function buildModel(sys, opt, F0, isl) {
-    const { buses, gens, lines } = sys;
-    const angRef = new Set(isl.groups.map((g) => g[0]));
-    const vars = [], rows = [];
-    gens.forEach((g, k) => vars.push({ name: `g${k}`, lb: 0, ub: Math.max(0, g.cap), c: g.offer }));
-    buses.forEach((b, i) => {
-      const d = sys.loads[b] || 0;
-      if (d > 0) vars.push({ name: `s${i}`, lb: 0, ub: d, c: opt.voll });
-      if (!angRef.has(b)) vars.push({ name: `t${i}`, lb: -Infinity, ub: Infinity, c: 0 });
-    });
-    const bi = {}; buses.forEach((b, i) => (bi[b] = i));
-    const flowExpr = (j) => { // F_j = k (theta_a - theta_b)
-      const l = lines[j], a = bi[l.from], b = bi[l.to], k = BASE / l.x, e = {};
-      if (!angRef.has(l.from)) e[`t${a}`] = (e[`t${a}`] || 0) + k;
-      if (!angRef.has(l.to)) e[`t${b}`] = (e[`t${b}`] || 0) - k;
-      return e;
-    };
-    const FE = lines.map((_, j) => flowExpr(j));
-    buses.forEach((b, i) => {
-      const coefs = {}; let rhs = sys.loads[b] || 0;
-      gens.forEach((g, k) => { if (g.bus === b) coefs[`g${k}`] = (coefs[`g${k}`] || 0) + 1; });
-      if ((sys.loads[b] || 0) > 0) coefs[`s${i}`] = 1;
-      lines.forEach((l, j) => {
-        if (l.from !== b && l.to !== b) return;
-        let cf = 0;
-        if (l.from === b) cf -= 1;
-        if (l.to === b) cf += 1;
-        if (opt.losses) { const rr = l.r / BASE; cf -= rr * F0[j]; rhs -= 0.5 * rr * F0[j] * F0[j]; }
-        for (const [n, a] of Object.entries(FE[j])) coefs[n] = (coefs[n] || 0) + cf * a;
-      });
-      rows.push({ name: `bal${i}`, coefs, rhs });
-    });
-    if (opt.congestion) {
-      lines.forEach((l, j) => {
-        vars.push({ name: `w${j}`, lb: -l.rating, ub: l.rating, c: 0 });
-        const coefs = Object.assign({}, FE[j]); coefs[`w${j}`] = -1;
-        rows.push({ name: `lim${j}`, coefs, rhs: 0 });
-      });
-    }
-    return { vars, rows, FE };
-  }
-
-  function solveOnce(sys, opt, F0, isl) {
-    const model = buildModel(sys, opt, F0, isl);
-    const r = solveLP(model);
-    if (r.status !== "Optimal") return { ok: false, status: r.status };
-    const v = (n) => r.x[n] || 0;
-    const theta = sys.buses.map((_, i) => v(`t${i}`));
-    const F = sys.lines.map((_, j) => { let f = 0; for (const [n, a] of Object.entries(model.FE[j])) f += a * v(n); return f; });
-    return {
-      ok: true, F, theta,
-      g: sys.gens.map((_, k) => v(`g${k}`)),
-      shed: sys.buses.map((_, i) => v(`s${i}`)),
-      lmp: sys.buses.map((_, i) => r.dual[`bal${i}`]),
-      mu: sys.lines.map((_, j) => (opt.congestion ? Math.abs(r.dual[`lim${j}`] || 0) : 0)),
-      obj: r.obj,
-    };
-  }
-
   // Marginal loss factor of bus t relative to bus s (same island), using
   // the LP's linearised loss model: d(gen at s)/d(load at t) - 1.
   function lossSensitivity(sys, group, s, t, F) {
@@ -554,23 +742,120 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
     return x ? x[N - 1] - 1 : 0;
   }
 
-  function solve(sys, opt) {
+  /* ---------- multi-period market model ----------
+     sys = {
+       T, buses:[id], lines:[{from,to,x,r,rating}],
+       gens:[{name,bus,blocks:[{mw,price}],ramp}]   ramp: MW per period (null/Infinity = none)
+       bids:{busId:[{mw,price}]}                     price-responsive demand, same every period
+       per:[{loads:{busId:MW}, lineOn:[bool], rating:[MW], avail:[MW]}]   one entry per period
+     }
+     opt = { losses, congestion, voll, ref, maxIter, tol } */
+  function periodIslands(sys, t) {
+    const p = sys.per[t];
+    return islands({ buses: sys.buses, lines: sys.lines.filter((_, j) => p.lineOn[j]) });
+  }
+  function blockBounds(g, avail) {
+    let left = isFinite(avail) ? Math.max(0, avail) : Infinity;
+    return g.blocks.map((b) => { const ub = Math.max(0, Math.min(Math.max(0, b.mw), left)); left -= ub; return ub; });
+  }
+  function buildMarket(sys, opt, F0, isl) {
+    const { buses, gens, lines, T } = sys;
+    const vars = [], rows = [], FE = [];
+    const bi = {}; buses.forEach((b, i) => (bi[b] = i));
+    for (let t = 0; t < T; t++) {
+      const P = sys.per[t], angRef = new Set(isl[t].groups.map((g) => g[0]));
+      gens.forEach((g, k) => blockBounds(g, P.avail[k]).forEach((ub, q) => vars.push({ name: `g${k}_${q}_${t}`, lb: 0, ub, c: +g.blocks[q].price })));
+      buses.forEach((b, i) => {
+        const d = P.loads[b] || 0;
+        if (d > 0) vars.push({ name: `s${i}_${t}`, lb: 0, ub: d, c: opt.voll });
+        (sys.bids[b] || []).forEach((bd, q) => { if (bd.mw > 0) vars.push({ name: `d${i}_${q}_${t}`, lb: 0, ub: bd.mw, c: -bd.price }); });
+        if (!angRef.has(b)) vars.push({ name: `t${i}_${t}`, lb: -Infinity, ub: Infinity, c: 0 });
+      });
+      const fe = lines.map((l, j) => {
+        if (!P.lineOn[j]) return null;
+        const a = bi[l.from], b = bi[l.to], k = BASE / l.x, e = {};
+        if (!angRef.has(l.from)) e[`t${a}_${t}`] = (e[`t${a}_${t}`] || 0) + k;
+        if (!angRef.has(l.to)) e[`t${b}_${t}`] = (e[`t${b}_${t}`] || 0) - k;
+        return e;
+      });
+      FE.push(fe);
+      buses.forEach((b, i) => {
+        const coefs = {}; let rhs = P.loads[b] || 0;
+        gens.forEach((g, k) => { if (g.bus === b) g.blocks.forEach((_, q) => (coefs[`g${k}_${q}_${t}`] = 1)); });
+        if (rhs > 0) coefs[`s${i}_${t}`] = 1;
+        (sys.bids[b] || []).forEach((bd, q) => { if (bd.mw > 0) coefs[`d${i}_${q}_${t}`] = -1; });
+        lines.forEach((l, j) => {
+          if (!fe[j] || (l.from !== b && l.to !== b)) return;
+          let cf = 0;
+          if (l.from === b) cf -= 1;
+          if (l.to === b) cf += 1;
+          if (opt.losses) { const rr = l.r / BASE; cf -= rr * F0[t][j]; rhs -= 0.5 * rr * F0[t][j] * F0[t][j]; }
+          for (const [n, a] of Object.entries(fe[j])) coefs[n] = (coefs[n] || 0) + cf * a;
+        });
+        rows.push({ name: `bal${i}_${t}`, coefs, rhs });
+      });
+      if (opt.congestion) lines.forEach((l, j) => {
+        if (!fe[j]) return;
+        vars.push({ name: `w${j}_${t}`, lb: -P.rating[j], ub: P.rating[j], c: 0 });
+        const coefs = Object.assign({}, fe[j]); coefs[`w${j}_${t}`] = -1;
+        rows.push({ name: `lim${j}_${t}`, coefs, rhs: 0 });
+      });
+    }
+    // ramp limits between consecutive periods (skipped across a change in availability, e.g. an outage)
+    for (let t = 1; t < T; t++) gens.forEach((g, k) => {
+      const R = g.ramp;
+      if (R === null || R === undefined || !isFinite(R) || R < 0) return;
+      if (sys.per[t].avail[k] !== sys.per[t - 1].avail[k]) return;
+      const coefs = {};
+      g.blocks.forEach((_, q) => { coefs[`g${k}_${q}_${t}`] = 1; coefs[`g${k}_${q}_${t - 1}`] = -1; });
+      vars.push({ name: `r${k}_${t}`, lb: -R, ub: R, c: 0 });
+      coefs[`r${k}_${t}`] = -1;
+      rows.push({ name: `ramp${k}_${t}`, coefs, rhs: 0 });
+    });
+    return { vars, rows, FE };
+  }
+
+  function solveMarketOnce(sys, opt, F0, isl) {
+    const model = buildMarket(sys, opt, F0, isl);
+    const r = solveLP(model);
+    if (r.status !== "Optimal") return { ok: false, status: r.status };
+    const v = (n) => r.x[n] || 0;
+    const out = [];
+    for (let t = 0; t < sys.T; t++) {
+      const F = sys.lines.map((_, j) => { const e = model.FE[t][j]; if (!e) return 0; let f = 0; for (const [n, a] of Object.entries(e)) f += a * v(n); return f; });
+      out.push({
+        F,
+        theta: sys.buses.map((_, i) => v(`t${i}_${t}`)),
+        gb: sys.gens.map((g, k) => g.blocks.map((_, q) => v(`g${k}_${q}_${t}`))),
+        shed: sys.buses.map((_, i) => v(`s${i}_${t}`)),
+        flex: sys.buses.map((b, i) => (sys.bids[b] || []).map((_, q) => v(`d${i}_${q}_${t}`))),
+        lmp: sys.buses.map((_, i) => r.dual[`bal${i}_${t}`]),
+        mu: sys.lines.map((_, j) => (opt.congestion && model.FE[t][j] ? Math.abs(r.dual[`lim${j}_${t}`] || 0) : 0)),
+        ramp: sys.gens.map((_, k) => (t > 0 && `ramp${k}_${t}` in r.dual ? { val: v(`r${k}_${t}`), dual: r.dual[`ramp${k}_${t}`] } : null)),
+      });
+    }
+    return { ok: true, per: out, obj: r.obj };
+  }
+
+  function solveMarket(sys, opt) {
     opt = Object.assign({ losses: false, congestion: false, voll: 1000, ref: sys.buses[0], maxIter: 60, tol: 1e-4 }, opt);
-    const isl = islands(sys);
-    let F0 = sys.lines.map(() => 0);
+    const T = sys.T;
+    const isl = []; for (let t = 0; t < T; t++) isl.push(periodIslands(sys, t));
+    let F0 = []; for (let t = 0; t < T; t++) F0.push(sys.lines.map(() => 0));
     let res, iter = 0, converged = true;
-    if (!opt.losses) res = solveOnce(sys, opt, F0, isl);
+    if (!opt.losses) res = solveMarketOnce(sys, opt, F0, isl);
     else {
       converged = false;
       let damp = 1, prevErr = Infinity;
       for (iter = 1; iter <= opt.maxIter; iter++) {
-        res = solveOnce(sys, opt, F0, isl);
+        res = solveMarketOnce(sys, opt, F0, isl);
         if (!res.ok) break;
-        const err = res.F.length ? Math.max(...res.F.map((f, j) => Math.abs(f - F0[j]))) : 0;
+        let err = 0;
+        res.per.forEach((p, t) => p.F.forEach((f, j) => (err = Math.max(err, Math.abs(f - F0[t][j])))));
         if (err < opt.tol) { converged = true; break; }
         if (err > prevErr * 0.95) damp = Math.max(0.2, damp * 0.7);
         prevErr = err;
-        F0 = res.F.map((f, j) => F0[j] + damp * (f - F0[j]));
+        F0 = res.per.map((p, t) => p.F.map((f, j) => F0[t][j] + damp * (f - F0[t][j])));
       }
       if (iter > opt.maxIter) iter = opt.maxIter;
     }
@@ -578,48 +863,78 @@ header.banner :focus-visible { outline-color: #1e3a5f; }
 
     const { buses, gens, lines } = sys;
     const clean = (v) => (Math.abs(v) < 1e-7 ? 0 : v);
-    res.lmp = res.lmp.map(clean);
     const bi = {}; buses.forEach((b, i) => (bi[b] = i));
-    const loss = lines.map((l, j) => (opt.losses ? (l.r / BASE) * res.F[j] * res.F[j] : 0));
-
-    // reference bus per island
-    const islRef = isl.groups.map((g) => (g.includes(opt.ref) ? opt.ref : g[0]));
-    const comp = buses.map((b, i) => {
-      const gi = isl.id[b], ref = islRef[gi];
-      const lmpRef = res.lmp[bi[ref]];
-      const mlf = opt.losses && b !== ref ? lossSensitivity(sys, isl.groups[gi], ref, b, res.F) : 0;
-      const lossC = lmpRef * mlf;
-      return { ref, mlf, energy: lmpRef, loss: clean(lossC), cong: clean(res.lmp[i] - lmpRef - lossC) };
-    });
-    const lineOut = lines.map((l, j) => {
-      const F = res.F[j], L = loss[j], a = bi[l.from], b = bi[l.to];
-      const send = F + L / 2, recv = F - L / 2;
-      const binding = opt.congestion && Math.abs(Math.abs(F) - l.rating) < 1e-5 * Math.max(1, l.rating);
-      return { F, loss: L, send, recv, mu: binding ? res.mu[j] : 0, binding,
-        loading: Math.abs(F) / l.rating, surplus: res.lmp[b] * recv - res.lmp[a] * send };
-    });
-    const genOut = gens.map((g, k) => {
-      const p = res.g[k], price = res.lmp[bi[g.bus]];
-      const status = p < 1e-6 ? "off" : p > g.cap - 1e-6 ? "full" : "marginal";
-      return { p, price, revenue: price * p, cost: g.offer * p, profit: (price - g.offer) * p, status };
-    });
-    const loadOut = buses.map((b, i) => {
-      const d = sys.loads[b] || 0;
-      return { d, shed: res.shed[i], served: d - res.shed[i], payment: res.lmp[i] * (d - res.shed[i]) };
-    });
     const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
-    const loadPay = sum(loadOut, (x) => x.payment), genRev = sum(genOut, (x) => x.revenue);
-    return {
-      ok: true, converged, iterations: iter, obj: res.obj, islands: isl,
-      lmp: res.lmp, theta: res.theta, comp, lines: lineOut, gens: genOut, loads: loadOut,
-      totals: {
-        gen: sum(genOut, (x) => x.p), load: sum(loadOut, (x) => x.d), shed: sum(loadOut, (x) => x.shed),
-        losses: sum(loss, (x) => x), loadPay, genRev, surplus: loadPay - genRev, genCost: sum(genOut, (x) => x.cost),
-      },
-    };
+    const periods = res.per.map((rp, t) => {
+      const P = sys.per[t], I = isl[t];
+      const lmp = rp.lmp.map(clean);
+      const onIdx = lines.map((_, j) => j).filter((j) => P.lineOn[j]);
+      const sysOn = { buses, lines: onIdx.map((j) => lines[j]) };
+      const Fon = onIdx.map((j) => rp.F[j]);
+      const loss = lines.map((l, j) => (opt.losses && P.lineOn[j] ? (l.r / BASE) * rp.F[j] * rp.F[j] : 0));
+      const islRef = I.groups.map((g) => (g.includes(opt.ref) ? opt.ref : g[0]));
+      const comp = buses.map((b, i) => {
+        const gi = I.id[b], ref = islRef[gi], lmpRef = lmp[bi[ref]];
+        const mlf = opt.losses && b !== ref ? lossSensitivity(sysOn, I.groups[gi], ref, b, Fon) : 0;
+        const lossC = lmpRef * mlf;
+        return { ref, mlf, energy: lmpRef, loss: clean(lossC), cong: clean(lmp[i] - lmpRef - lossC) };
+      });
+      const lineOut = lines.map((l, j) => {
+        const on = P.lineOn[j], F = on ? rp.F[j] : 0, L = loss[j], a = bi[l.from], b = bi[l.to], rating = P.rating[j];
+        const send = F + L / 2, recv = F - L / 2;
+        const binding = on && opt.congestion && Math.abs(Math.abs(F) - rating) < 1e-5 * Math.max(1, rating);
+        return { on, F, loss: L, send, recv, rating, mu: binding ? rp.mu[j] : 0, binding,
+          loading: on && rating > 0 ? Math.abs(F) / rating : 0, surplus: on ? lmp[b] * recv - lmp[a] * send : 0 };
+      });
+      const genOut = gens.map((g, k) => {
+        const blocks = rp.gb[k].map(clean), p = sum(blocks, (x) => x), price = lmp[bi[g.bus]];
+        const availCap = sum(blockBounds(g, P.avail[k]), (x) => x);
+        const cost = blocks.reduce((s, x, q) => s + x * g.blocks[q].price, 0);
+        const rIn = rp.ramp[k], rOut = t + 1 < res.per.length ? res.per[t + 1].ramp[k] : null;
+        const lim = (z) => z && isFinite(g.ramp) && Math.abs(Math.abs(z.val) - g.ramp) < 1e-6 * Math.max(1, g.ramp) && Math.abs(z.dual) > 1e-7;
+        const rampBind = lim(rIn) || lim(rOut);
+        let status = p < 1e-6 ? "off" : p > availCap - 1e-6 ? "full" : "marginal";
+        if (status === "marginal" && rampBind) status = "ramp";
+        if (availCap < 1e-9 && P.avail[k] !== Infinity) status = "out";
+        return { p, blocks, availCap, price, revenue: price * p, cost, profit: price * p - cost, status,
+          rampIn: rIn && isFinite(g.ramp) ? rIn.val : null, rampBind };
+      });
+      const loadOut = buses.map((b, i) => {
+        const d = P.loads[b] || 0, flexB = rp.flex[i].map(clean), flex = sum(flexB, (x) => x);
+        const served = d - rp.shed[i];
+        const bidValue = flexB.reduce((s, x, q) => s + x * sys.bids[b][q].price, 0);
+        return { d, shed: clean(rp.shed[i]), served, flex, flexB, bidValue, withdraw: served + flex, payment: lmp[i] * (served + flex) };
+      });
+      const inj = buses.map(() => 0); gens.forEach((g, k) => (inj[bi[g.bus]] += genOut[k].p));
+      const netW = buses.map((_, i) => loadOut[i].withdraw - inj[i]);
+      const loadPay = sum(loadOut, (x) => x.payment), genRev = sum(genOut, (x) => x.revenue);
+      const congRent = sum(buses.map((_, i) => i), (i) => comp[i].cong * netW[i]);
+      const genCost = sum(genOut, (x) => x.cost), shed = sum(loadOut, (x) => x.shed), bidValue = sum(loadOut, (x) => x.bidValue);
+      return {
+        ok: true, t, lmp, theta: rp.theta, comp, lines: lineOut, gens: genOut, loads: loadOut, islands: I,
+        obj: genCost + opt.voll * shed - bidValue,
+        totals: {
+          gen: sum(genOut, (x) => x.p), load: sum(loadOut, (x) => x.d), flex: sum(loadOut, (x) => x.flex), shed,
+          losses: sum(loss, (x) => x), loadPay, genRev, surplus: loadPay - genRev, genCost, bidValue,
+          congRent, lossSurplus: loadPay - genRev - congRent, welfare: bidValue - genCost,
+        },
+      };
+    });
+    return { ok: true, converged, iterations: iter, obj: res.obj, T, periods };
   }
 
-  const api = { solve, solveLP, buildModel, islands, BASE };
+  // single-period convenience wrapper with the original call shape
+  function solve(sys, opt) {
+    const r = solveMarket({
+      T: 1, buses: sys.buses, lines: sys.lines, bids: sys.bids || {},
+      gens: sys.gens.map((g) => ({ name: g.name, bus: g.bus, ramp: null, blocks: g.blocks || [{ mw: g.cap, price: g.offer }] })),
+      per: [{ loads: sys.loads, lineOn: sys.lines.map(() => true), rating: sys.lines.map((l) => l.rating), avail: sys.gens.map(() => Infinity) }],
+    }, opt);
+    if (!r.ok) return r;
+    return Object.assign({}, r.periods[0], { converged: r.converged, iterations: r.iterations });
+  }
+
+  const api = { solve, solveMarket, solveLP, islands, BASE };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.NetEngine = api;
 })(this);
@@ -654,25 +969,99 @@ function pa5() {
   };
 }
 function blank() { return { name: "New network", buses: [], lines: [], gens: [], settings: { losses: false, congestion: true, ref: null, voll: 1000 } }; }
-const LIB = { ks3, pa5, blank };
+// Five-bus network run over a four-period day with stepwise offers, ramp limits, a demand bid and real-time events.
+function pa5day() {
+  const n = pa5();
+  n.name = "Five-bus day (4 periods, DA + RT)";
+  n.lines.forEach((l) => (l.rating = 600));
+  n.lines.find((l) => l.from === 1 && l.to === 5).rating = 500;
+  n.gens = [
+    { id: 1, name: "G1", bus: 1, ramp: 300, blocks: [{ mw: 900, price: 5 }, { mw: 600, price: 12 }] },
+    { id: 2, name: "G2", bus: 2, ramp: null, blocks: [{ mw: 500, price: 45 }, { mw: 500, price: 60 }] },
+    { id: 3, name: "G3", bus: 3, ramp: 80, blocks: [{ mw: 200, price: 20 }, { mw: 150, price: 28 }] },
+    { id: 4, name: "G4", bus: 4, ramp: null, blocks: [{ mw: 100, price: 19 }] },
+  ];
+  n.buses.find((b) => b.id === 5).bids = [{ mw: 60, price: 40 }];
+  n.settings = { losses: false, congestion: true, ref: 3, voll: 1000, periods: 4, profile: [0.75, 1, 1.1, 0.85], market: "dart" };
+  n.rt = { events: [
+    { type: "loadPct", pct: 5, period: 3 },
+    { type: "gen", gen: 3, avail: 150, period: 3 },
+    { type: "lineOut", line: 2, period: 2 },
+  ] };
+  return n;
+}
+// IEEE 14-bus test system: topology, r, x and loads from MATPOWER case14.
+// Line limits and stepwise offers (approximating case14's quadratic costs) are teaching additions.
+function ieee14() {
+  const P = { 1: [140, 170], 2: [170, 470], 3: [330, 700], 4: [520, 520], 5: [470, 260], 6: [700, 230], 7: [760, 470], 8: [960, 470],
+    9: [790, 640], 10: [930, 700], 11: [880, 330], 12: [690, 60], 13: [930, 120], 14: [1080, 330] };
+  const L = { 2: 21.7, 3: 94.2, 4: 47.8, 5: 7.6, 6: 11.2, 9: 29.5, 10: 9, 11: 3.5, 12: 6.1, 13: 13.5, 14: 14.9 };
+  const br = [[1, 2, .01938, .05917, 120], [1, 5, .05403, .22304, 65], [2, 3, .04699, .19797, 80], [2, 4, .05811, .17632, 60], [2, 5, .05695, .17388, 50],
+    [3, 4, .06701, .17103, 60], [4, 5, .01335, .04211, 60], [4, 7, 0, .20912, 50], [4, 9, 0, .55618, 40], [5, 6, 0, .25202, 60],
+    [6, 11, .09498, .19890, 30], [6, 12, .12291, .25581, 30], [6, 13, .06615, .13027, 40], [7, 8, 0, .17615, 60], [7, 9, 0, .11001, 50],
+    [9, 10, .03181, .08450, 30], [9, 14, .12711, .27038, 30], [10, 11, .08205, .19207, 30], [12, 13, .22092, .19988, 30], [13, 14, .17093, .34802, 30]];
+  // marginal cost of c2 P^2 + c1 P evaluated at block midpoints
+  const blk = (cap, c2, c1, n) => Array.from({ length: n }, (_, q) => { const mw = cap / n, mid = mw * (q + 0.5); return { mw: +mw.toFixed(1), price: +(c1 + 2 * c2 * mid).toFixed(2) }; });
+  return {
+    name: "IEEE 14-bus",
+    buses: Object.keys(P).map((i) => ({ id: +i, x: P[i][0], y: P[i][1], load: L[i] || 0 })),
+    lines: br.map(([f, t, r, x, rating], j) => ({ id: j + 1, from: f, to: t, x, r, rating })),
+    gens: [
+      { id: 1, name: "G1", bus: 1, blocks: blk(332.4, 0.0430293, 20, 3) }, { id: 2, name: "G2", bus: 2, blocks: blk(140, 0.25, 20, 3) },
+      { id: 3, name: "G3", bus: 3, blocks: blk(100, 0.01, 40, 2) }, { id: 4, name: "G6", bus: 6, blocks: blk(100, 0.01, 40, 2) },
+      { id: 5, name: "G8", bus: 8, blocks: blk(100, 0.01, 40, 2) },
+    ],
+    settings: { losses: false, congestion: true, ref: 1, voll: 1000 },
+  };
+}
+const LIB = { ks3, pa5, pa5day, ieee14, blank };
+
+/* ---------- data model: fill defaults for older saved networks ---------- */
+function normalize(n) {
+  const s = (n.settings = Object.assign({ losses: false, congestion: true, ref: null, voll: 1000 }, n.settings || {}));
+  s.periods = clamp(Math.round(+s.periods || 1), 1, 24);
+  if (!Array.isArray(s.profile)) s.profile = [];
+  s.profile = Array.from({ length: s.periods }, (_, t) => (isFinite(+s.profile[t]) && s.profile[t] !== null ? +s.profile[t] : 1));
+  if (s.market !== "dart") s.market = "single";
+  n.buses.forEach((b) => {
+    if (!Array.isArray(b.bids)) b.bids = [];
+    if (Array.isArray(b.loadP)) b.loadP = Array.from({ length: s.periods }, (_, t) => (isFinite(+b.loadP[t]) && b.loadP[t] !== null ? +b.loadP[t] : (+b.load || 0) * s.profile[t]));
+    else b.loadP = null;
+  });
+  n.gens.forEach((g) => {
+    if (!Array.isArray(g.blocks) || !g.blocks.length) g.blocks = [{ mw: +g.cap || 0, price: +g.offer || 0 }];
+    if (g.ramp === undefined || g.ramp === "") g.ramp = null;
+    syncGen(g);
+  });
+  n.rt = Object.assign({ events: [] }, n.rt || {});
+  delete n.lab;
+  return n;
+}
+function syncGen(g) { g.cap = g.blocks.reduce((a, b) => a + (+b.mw || 0), 0); g.offer = +g.blocks[0].price || 0; }
+const T = () => N.settings.periods;
+const dart = () => N.settings.market === "dart";
+// load at a bus in period t (0-based), before real-time events
+function effLoad(b, t) { return b.loadP ? +b.loadP[t] || 0 : (+b.load || 0) * (N.settings.profile[t] ?? 1); }
+const offerTxt = (g) => { const p = g.blocks.map((b) => +b.price); const lo = Math.min(...p), hi = Math.max(...p); return lo === hi ? money(lo) : `${money(lo)}–${money(hi)}`; };
 
 /* ---------- state ---------- */
-let N, mode = "build", tool = "select", sel = null, pendingFrom = null, hidden = false, revealed = false;
+let N, mode = "build", tool = "select", sel = null, pendingFrom = null;
 let tab = "buses", baseline = null, R = null, V = { errors: [], warnings: [] };
+let curP = 0, mkt = "da", RES = { da: null, rt: null };
 const undo = [];
 const LS = "net-lmp-lab-v1";
-function save() { try { localStorage.setItem(LS, JSON.stringify({ N, mode, hidden, tab })); } catch (e) {} }
+function save() { try { localStorage.setItem(LS, JSON.stringify({ N, mode, tab, curP, mkt })); } catch (e) {} }
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(LS) || "null");
-    if (d && d.N && Array.isArray(d.N.buses)) { N = d.N; mode = d.mode || "build"; hidden = !!d.hidden; tab = d.tab || "buses"; return; }
+    if (d && d.N && Array.isArray(d.N.buses)) { N = normalize(d.N); mode = d.mode || "build"; tab = d.tab || "buses"; curP = +d.curP || 0; mkt = d.mkt === "rt" ? "rt" : "da"; return; }
   } catch (e) {}
-  N = ks3();
+  N = normalize(ks3());
 }
 function snapshot() { undo.push(JSON.stringify(N)); if (undo.length > 60) undo.shift(); $("undoBtn").disabled = false; }
 function doUndo() {
   if (!undo.length) return;
-  N = JSON.parse(undo.pop()); sel = null; pendingFrom = null;
+  N = normalize(JSON.parse(undo.pop())); sel = null; pendingFrom = null;
   $("undoBtn").disabled = !undo.length; refresh(true);
 }
 
@@ -688,16 +1077,39 @@ const signed = (v, f = f2) => (v > 0.0005 ? "+" : v < -0.0005 ? "−" : "") + f(
 const busById = (id) => N.buses.find((b) => b.id === id);
 const lineLabel = (l) => `${l.from}–${l.to}${N.lines.filter((m) => (m.from === l.from && m.to === l.to) || (m.from === l.to && m.to === l.from)).length > 1 ? ` (#${l.id})` : ""}`;
 const nextId = (arr) => arr.reduce((m, o) => Math.max(m, o.id), 0) + 1;
-const showResults = () => mode === "market" && (!hidden || revealed) && R && R.ok;
+const showResults = () => mode === "market" && R && R.ok;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-function sysFrom() {
-  const loads = {}; N.buses.forEach((b) => (loads[b.id] = +b.load || 0));
+// small seeded random generator so "forecast error" events are reproducible
+function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+// Build the multi-period market input. rt = true applies the real-time events.
+function marketSys(rt, net) {
+  const n = net || N, nT = n.settings.periods;
+  const eff = (b, t) => (b.loadP ? +b.loadP[t] || 0 : (+b.load || 0) * (n.settings.profile[t] ?? 1));
+  const per = [];
+  for (let t = 0; t < nT; t++) {
+    const loads = {}; n.buses.forEach((b) => (loads[b.id] = eff(b, t)));
+    per.push({ loads, lineOn: n.lines.map(() => true), rating: n.lines.map((l) => +l.rating), avail: n.gens.map(() => Infinity) });
+  }
+  if (rt) {
+    const hits = (e, t) => !+e.period || +e.period === t + 1;
+    const ev = n.rt.events;
+    ev.forEach((e) => { if (e.type === "noise") { const r = rng(+e.seed || 1); for (let t = 0; t < nT; t++) n.buses.forEach((b) => { const z = (r() + r() + r() - 1.5) * 2; per[t].loads[b.id] *= Math.max(0, 1 + (+e.pct || 0) / 100 * z); }); } });
+    ev.forEach((e) => { if (e.type === "loadPct") for (let t = 0; t < nT; t++) if (hits(e, t)) n.buses.forEach((b) => (per[t].loads[b.id] *= Math.max(0, 1 + (+e.pct || 0) / 100))); });
+    ev.forEach((e) => { if (e.type === "load") for (let t = 0; t < nT; t++) if (hits(e, t) && e.bus in per[t].loads) per[t].loads[e.bus] = Math.max(0, per[t].loads[e.bus] + (+e.mw || 0)); });
+    ev.forEach((e) => {
+      for (let t = 0; t < nT; t++) {
+        if (!hits(e, t)) continue;
+        if (e.type === "gen") { const k = n.gens.findIndex((g) => g.id === +e.gen); if (k >= 0) per[t].avail[k] = Math.min(per[t].avail[k], Math.max(0, +e.avail || 0)); }
+        if (e.type === "lineOut" || e.type === "lineRate") { const j = n.lines.findIndex((l) => l.id === +e.line); if (j < 0) continue; if (e.type === "lineOut") per[t].lineOn[j] = false; else per[t].rating[j] = Math.min(per[t].rating[j], Math.max(0, +e.rating || 0)); }
+      }
+    });
+  }
+  const bids = {}; n.buses.forEach((b) => (bids[b.id] = b.bids.map((x) => ({ mw: +x.mw, price: +x.price }))));
   return {
-    buses: N.buses.map((b) => b.id),
-    gens: N.gens.map((g) => ({ name: g.name, bus: g.bus, cap: +g.cap, offer: +g.offer })),
-    loads,
-    lines: N.lines.map((l) => ({ from: l.from, to: l.to, x: +l.x, r: +l.r, rating: +l.rating })),
+    T: nT, buses: n.buses.map((b) => b.id), bids, per,
+    gens: n.gens.map((g) => ({ name: g.name, bus: g.bus, ramp: g.ramp === null || g.ramp === "" ? null : +g.ramp, blocks: g.blocks.map((b) => ({ mw: +b.mw, price: +b.price })) })),
+    lines: n.lines.map((l) => ({ from: l.from, to: l.to, x: +l.x, r: +l.r, rating: +l.rating })),
   };
 }
 function optsFrom() {
@@ -720,20 +1132,35 @@ function validate() {
     if (N.settings.congestion && (!okNum(l.rating) || l.rating <= 0)) errors.push({ t: `${nm}: limit must be greater than 0.`, sel: { kind: "line", id: l.id } });
   });
   N.gens.forEach((g) => {
-    if (!busById(g.bus)) errors.push({ t: `Generator ${g.name} is not connected to a bus.`, sel: { kind: "gen", id: g.id } });
-    if (!okNum(g.cap) || g.cap < 0) errors.push({ t: `Generator ${g.name}: capacity cannot be negative.`, sel: { kind: "gen", id: g.id } });
-    if (!okNum(g.offer)) errors.push({ t: `Generator ${g.name}: enter an offer price.`, sel: { kind: "gen", id: g.id } });
+    const gs = { kind: "gen", id: g.id };
+    if (!busById(g.bus)) errors.push({ t: `Generator ${g.name} is not connected to a bus.`, sel: gs });
+    if (g.blocks.some((b) => !okNum(b.mw) || b.mw < 0)) errors.push({ t: `Generator ${g.name}: block sizes cannot be negative.`, sel: gs });
+    if (g.blocks.some((b) => !okNum(b.price))) errors.push({ t: `Generator ${g.name}: enter a price for every offer block.`, sel: gs });
+    else if (g.blocks.some((b, q) => q > 0 && b.price < g.blocks[q - 1].price)) errors.push({ t: `Generator ${g.name}: offer block prices must not decrease (ISOs require a non-decreasing offer curve).`, sel: gs });
+    if (g.ramp !== null && (!okNum(g.ramp) || g.ramp < 0)) errors.push({ t: `Generator ${g.name}: ramp limit must be 0 or more (leave blank for no limit).`, sel: gs });
   });
-  N.buses.forEach((b) => { if (!okNum(b.load) || b.load < 0) errors.push({ t: `Bus ${b.id}: load cannot be negative.`, sel: { kind: "bus", id: b.id } }); });
+  N.buses.forEach((b) => {
+    const bsl = { kind: "bus", id: b.id };
+    if (!okNum(b.load) || b.load < 0) errors.push({ t: `Bus ${b.id}: load cannot be negative.`, sel: bsl });
+    if (b.loadP && b.loadP.some((v) => !okNum(v) || v < 0)) errors.push({ t: `Bus ${b.id}: period loads cannot be negative.`, sel: bsl });
+    if (b.bids.some((x) => !okNum(x.mw) || x.mw < 0 || !okNum(x.price))) errors.push({ t: `Bus ${b.id}: every demand bid needs a size of 0 MW or more and a price.`, sel: bsl });
+    else if (b.bids.some((x, q) => q > 0 && x.price > b.bids[q - 1].price)) errors.push({ t: `Bus ${b.id}: demand bid prices must not increase (a non-increasing demand curve).`, sel: bsl });
+  });
+  if (N.settings.profile.some((v) => !okNum(v) || v < 0)) errors.push({ t: "Load profile multipliers must be 0 or more.", sel: null });
+  if (dart()) N.rt.events.forEach((e) => {
+    const miss = (e.type === "load" && !busById(+e.bus)) || (e.type === "gen" && !N.gens.some((g) => g.id === +e.gen)) || ((e.type === "lineOut" || e.type === "lineRate") && !N.lines.some((l) => l.id === +e.line));
+    if (miss) warnings.push({ t: `Real-time event “${evtText(e)}” refers to an element that no longer exists. It is ignored.`, sel: null });
+    if (+e.period > T()) warnings.push({ t: `Real-time event “${evtText(e)}” is set for period ${e.period}, but the day has ${T()} period${T() === 1 ? "" : "s"}. It is ignored.`, sel: null });
+  });
   if (!okNum(N.settings.voll) || N.settings.voll <= 0) errors.push({ t: "VOLL must be greater than 0.", sel: null });
   if (!errors.length && N.buses.length) {
-    const isl = E.islands(sysFrom());
+    const isl = E.islands({ buses: N.buses.map((b) => b.id), lines: N.lines });
     if (isl.groups.length > 1) {
       warnings.push({ t: `The network has ${isl.groups.length} separate islands (${isl.groups.map((g) => "buses " + g.join(", ")).join("; ")}). Each island balances supply and demand and sets prices on its own.`, sel: null });
     }
     isl.groups.forEach((g) => {
       const cap = N.gens.filter((x) => g.includes(x.bus)).reduce((s, x) => s + x.cap, 0);
-      const load = N.buses.filter((b) => g.includes(b.id)).reduce((s, b) => s + b.load, 0);
+      const load = Math.max(...Array.from({ length: T() }, (_, t) => N.buses.filter((b) => g.includes(b.id)).reduce((s, b) => s + effLoad(b, t), 0)));
       if (load > 0 && cap < load) warnings.push({ t: `${g.length > 1 ? "Buses " + g.join(", ") + " have" : "Bus " + g[0] + " has"} ${f1(load)} MW of load but only ${f1(cap)} MW of generation reachable. The shortfall is unserved at VOLL.`, sel: g.length === 1 ? { kind: "bus", id: g[0] } : null });
     });
     if (!N.gens.length) warnings.push({ t: "No generators yet. Add one with the Add generator tool.", sel: null });
@@ -745,10 +1172,24 @@ function validate() {
 function solveNow() {
   V = validate();
   plusCache = null;
-  if (V.errors.length) { R = { ok: false, status: "Fix the network checks to run the market." }; return; }
-  R = E.solve(sysFrom(), optsFrom());
+  if (curP >= T()) curP = T() - 1;
+  if (!dart()) mkt = "da";
+  if (V.errors.length) { RES = { da: null, rt: null }; R = { ok: false, status: "Fix the network checks to run the market." }; return; }
+  const opt = optsFrom();
+  RES = { da: E.solveMarket(marketSys(false), opt), rt: dart() ? E.solveMarket(marketSys(true), opt) : null };
+  pickR();
 }
+// R is the result being shown: one period of the day-ahead or real-time solution
+function pickR() {
+  const res = mkt === "rt" && RES.rt ? RES.rt : RES.da;
+  if (!res) { R = { ok: false, status: "Fix the network checks to run the market." }; return; }
+  if (!res.ok) { R = { ok: false, status: res.status + (T() > 1 ? ". With ramp limits, units may be unable to follow the load from one period to the next." : "") + (mkt === "rt" ? " (real-time case)" : "") }; return; }
+  R = Object.assign({}, res.periods[curP], { converged: res.converged, iterations: res.iterations, dayObj: res.obj });
+}
+const resOf = (m) => (m === "rt" && RES.rt ? RES.rt : RES.da);
 
+// deep copy of a market input (keeps Infinity)
+function cloneSys(s) { return JSON.parse(JSON.stringify(s, (k, v) => (v === Infinity ? "INF" : v)), (k, v) => (v === "INF" ? Infinity : v)); }
 /* ---------- colour scale ---------- */
 const STOPS = [[37, 99, 175], [20, 150, 160], [74, 170, 80], [225, 190, 40], [235, 125, 35], [205, 45, 45]];
 function ramp(t) { t = clamp(t, 0, 1); const x = t * (STOPS.length - 1), i = Math.min(STOPS.length - 2, Math.floor(x)), u = x - i; return STOPS[i].map((v, k) => Math.round(v + (STOPS[i + 1][k] - v) * u)); }
@@ -790,7 +1231,9 @@ function draw() {
   const show = showResults();
   const idx = {}; N.buses.forEach((b, i) => (idx[b.id] = i));
   let lo = 0, hi = 0;
-  if (show) { lo = Math.min(...R.lmp); hi = Math.max(...R.lmp); }
+  const cb = N.settings.colorBy || "lmp";
+  const cval = show ? R.lmp.map((v, i) => (cb === "lmp" ? v : R.comp[i][cb])) : [];
+  if (show) { lo = Math.min(...cval); hi = Math.max(...cval); }
   let s = `<defs><pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern>
   <marker id="ldA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--ink)"/></marker></defs>
   <rect x="${view.x - 2000}" y="${view.y - 2000}" width="${view.w + 4000}" height="${view.w * ASP + 4000}" fill="var(--rule)" fill-opacity=".35" data-k="bg"/>
@@ -808,8 +1251,9 @@ function draw() {
     const sgn = l.from < l.to ? 1 : -1, off = (q - (n - 1) / 2) * 10 * sgn;
     x1 += -uy * off; y1 += ux * off; x2 += -uy * off; y2 += ux * off;
     const lr = show ? R.lines[j] : null;
-    let col = "var(--line-ink)", w = 2.2;
-    if (lr) {
+    let col = "var(--line-ink)", w = 2.2, dash = "";
+    if (lr && !lr.on) { col = "var(--muted)"; w = 2; dash = 'stroke-dasharray="7 6"'; }
+    else if (lr) {
       const maxF = Math.max(1, ...R.lines.map((z) => Math.abs(z.F)));
       w = 1.6 + 6 * Math.abs(lr.F) / maxF;
       if (lr.binding) col = "var(--bind)"; else if (N.settings.congestion && lr.loading > 0.9) col = "var(--warn)";
@@ -818,7 +1262,7 @@ function draw() {
     s += `<g data-k="line" data-id="${l.id}">`;
     s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="transparent" stroke-width="16"/>`;
     if (isSel) s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--brand)" stroke-opacity=".7" stroke-width="${w + 8}" stroke-linecap="round"/>`;
-    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w.toFixed(1)}" stroke-linecap="round"/>`;
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w.toFixed(1)}" stroke-linecap="round" ${dash}/>`;
     const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
     if (lr && Math.abs(lr.F) > 0.05) {
       const dir = lr.F > 0 ? 1 : -1, ax = mx + dir * ux * Math.min(70, len * 0.3), ay = my + dir * uy * Math.min(70, len * 0.3);
@@ -828,9 +1272,9 @@ function draw() {
     let nx = -uy, ny = ux; if (ny < 0 || (Math.abs(ny) < 0.2 && nx < 0)) { nx = -nx; ny = -ny; }
     const side = n > 1 ? (q - (n - 1) / 2 >= 0 ? 1 : -1) * sgn * (ux * 0 + 1) : 1;
     const lx = mx + nx * 17 * side, ly = my + ny * 17 * side;
-    const top = lr ? `${f1(Math.abs(lr.F))} MW` : mode === "build" ? `x ${g0(l.x)}` : "";
+    const top = lr ? (lr.on ? `${f1(Math.abs(lr.F))} MW` : "out of service") : mode === "build" ? `x ${g0(l.x)}` : "";
     if (top) s += `<text class="halo" x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="600">${top}</text>`;
-    if (N.settings.congestion && (mode === "build" || show)) s += `<text class="halo muted" x="${lx.toFixed(1)}" y="${(ly + 17).toFixed(1)}" text-anchor="middle" font-size="10.5" ${lr && lr.binding ? 'style="fill:var(--bind)"' : ""}>limit ${g0(l.rating)}</text>`;
+    if (N.settings.congestion && (mode === "build" || show)) s += `<text class="halo muted" x="${lx.toFixed(1)}" y="${(ly + 17).toFixed(1)}" text-anchor="middle" font-size="10.5" ${lr && lr.binding ? 'style="fill:var(--bind)"' : ""}>limit ${g0(lr ? lr.rating : l.rating)}</text>`;
     s += `</g>`;
   });
 
@@ -844,7 +1288,8 @@ function draw() {
     const sl = slots(b);
     const aPrice = pick(sl, -Math.PI / 2);
     const gens = N.gens.filter((g) => g.bus === b.id);
-    const hasLoad = (+b.load || 0) > 0;
+    const ld = show ? R.loads[idx[b.id]].d : effLoad(b, curP);
+    const hasLoad = ld > 0 || b.bids.length > 0;
     const aLoad = hasLoad ? pick(sl, Math.PI / 2) : null;
     gens.forEach((g) => (g._a = pick(sl, Math.PI)));
     // load
@@ -854,7 +1299,7 @@ function draw() {
       const i = idx[b.id], shed = show && R.loads[i].shed > 0.05;
       const tx = b.x + cx * 66, ty = b.y + cy * 66 + 4, anc = cx > 0.35 ? "start" : cx < -0.35 ? "end" : "middle";
       s += `<g data-k="bus" data-id="${b.id}"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--ink)" stroke-width="1.8" marker-end="url(#ldA)"/>`;
-      s += `<text class="halo" x="${tx}" y="${ty + (cy > 0.7 ? 6 : 0)}" text-anchor="${anc}" font-size="11.5" style="fill:var(--accent)">${f1(b.load)} MW</text>`;
+      s += `<text class="halo" x="${tx}" y="${ty + (cy > 0.7 ? 6 : 0)}" text-anchor="${anc}" font-size="11.5" style="fill:var(--accent)">${f1(ld)} MW${b.bids.length ? (show ? ` + ${f1(R.loads[i].flex)} bid` : " + bid") : ""}</text>`;
       if (shed) s += `<text class="halo" x="${tx}" y="${ty + (cy > 0.7 ? 6 : 0) + 13}" text-anchor="${anc}" font-size="10.5" style="fill:var(--bind)">unserved ${f1(R.loads[i].shed)}</text>`;
       s += `</g>`;
     }
@@ -863,8 +1308,8 @@ function draw() {
       const k = N.gens.indexOf(g), cx = Math.cos(g._a), cy = Math.sin(g._a);
       const gx = b.x + cx * 50, gy = b.y + cy * 50;
       const gr = show ? R.gens[k] : null;
-      const fill = gr ? (gr.status === "marginal" ? "var(--brand)" : gr.status === "full" ? "var(--good)" : "var(--chip-bg)") : "var(--panel)";
-      const ink = gr && gr.status === "marginal" ? "var(--brand-ink)" : gr && gr.status !== "off" ? "#ffffff" : "var(--ink)";
+      const fill = gr ? ({ marginal: "var(--brand)", full: "var(--good)", ramp: "var(--s7)", out: "var(--ink)" }[gr.status] || "var(--chip-bg)") : "var(--panel)";
+      const ink = gr && gr.status === "marginal" ? "var(--brand-ink)" : gr && gr.status === "out" ? "var(--panel)" : gr && gr.status !== "off" ? "#ffffff" : "var(--ink)";
       const isSel = sel && sel.kind === "gen" && sel.id === g.id;
       s += `<g data-k="gen" data-id="${g.id}">`;
       s += `<line x1="${b.x + cx * 20}" y1="${b.y + cy * 20}" x2="${gx - cx * 13}" y2="${gy - cy * 13}" stroke="var(--line-ink)" stroke-width="1.5"/>`;
@@ -874,14 +1319,14 @@ function draw() {
       if (Math.abs(cx) < 0.45 && cy < 0) { tx = gx; ty = gy - 33; anc = "middle"; }
       else if (Math.abs(cx) < 0.45) { tx = gx; ty = gy + 28; anc = "middle"; }
       else { anc = cx >= 0 ? "start" : "end"; tx = gx + (cx >= 0 ? 18 : -18); ty = gy - 2; }
-      s += `<text class="halo" x="${tx}" y="${ty}" text-anchor="${anc}" font-size="11.5" font-weight="600">${esc(g.name)}${gr ? " · " + f1(gr.p) : mode === "market" && hidden && !revealed ? " · ?" : ""}</text>`;
-      s += `<text class="halo muted" x="${tx}" y="${ty + 13}" text-anchor="${anc}" font-size="10.5">${money(+g.offer || 0)} · ${g0(+g.cap || 0)} MW</text>`;
+      s += `<text class="halo" x="${tx}" y="${ty}" text-anchor="${anc}" font-size="11.5" font-weight="600">${esc(g.name)}${gr ? " · " + f1(gr.p) : ""}</text>`;
+      s += `<text class="halo muted" x="${tx}" y="${ty + 13}" text-anchor="${anc}" font-size="10.5">${offerTxt(g)} · ${g0(+g.cap || 0)} MW${gr && gr.status === "out" ? " · out" : ""}</text>`;
       s += `</g>`;
     });
     // bus
     const i = idx[b.id];
     let fill = "var(--panel)", ink = "var(--ink)";
-    if (show) { const c = hi - lo < 0.005 ? ramp(0.35) : ramp((R.lmp[i] - lo) / (hi - lo)); fill = rgb(c); ink = lum(c) > 0.55 ? "#111" : "#fff"; }
+    if (show) { const c = hi - lo < 0.005 ? ramp(0.35) : ramp((cval[i] - lo) / (hi - lo)); fill = rgb(c); ink = lum(c) > 0.55 ? "#111" : "#fff"; }
     const isSel = sel && sel.kind === "bus" && sel.id === b.id, isPend = pendingFrom === b.id;
     s += `<g data-k="bus" data-id="${b.id}" class="bus">`;
     if (isSel || isPend) s += `<circle cx="${b.x}" cy="${b.y}" r="25" fill="none" stroke="var(--accent)" stroke-width="3" ${isPend ? 'stroke-dasharray="4 3"' : ""}/>`;
@@ -890,7 +1335,7 @@ function draw() {
     if (mode === "market") {
       const px = b.x + Math.cos(aPrice) * 34, py = b.y + Math.sin(aPrice) * 34 + 5;
       const anc = Math.cos(aPrice) > 0.35 ? "start" : Math.cos(aPrice) < -0.35 ? "end" : "middle";
-      s += `<text class="halo" x="${px}" y="${py}" text-anchor="${anc}" font-size="13.5" font-weight="600">${show ? money(R.lmp[i]) : R && R.ok ? "$ ?" : ""}</text>`;
+      s += `<text class="halo" x="${px}" y="${py}" text-anchor="${anc}" font-size="13.5" font-weight="600">${show ? money(R.lmp[i]) : ""}</text>`;
     }
   });
   svg.innerHTML = s;
@@ -900,8 +1345,11 @@ function draw() {
   let lg = "";
   if (show) {
     const st = STOPS.map((c, i) => `${rgb(c)} ${(i / (STOPS.length - 1)) * 100}%`).join(",");
-    lg += `<span class="key">LMP ${money(lo)} <span class="ramp" style="background:${hi - lo < 0.005 ? rgb(ramp(0.35)) : `linear-gradient(90deg,${st})`}"></span> ${money(hi)}</span>`;
+    lg += `<label class="key">Colour buses by <select id="colorBy" style="padding:2px 6px">${[["lmp", "LMP"], ["energy", "energy part"], ["cong", "congestion part"], ["loss", "loss part"]].map(([v, t]) => `<option value="${v}" ${v === cb ? "selected" : ""}>${t}</option>`).join("")}</select></label>`;
+    lg += `<span class="key">${money(lo)} <span class="ramp" style="background:${hi - lo < 0.005 ? rgb(ramp(0.35)) : `linear-gradient(90deg,${st})`}"></span> ${money(hi)}</span>`;
     lg += `<span class="key"><span class="swatch" style="background:var(--good)"></span>unit at capacity</span><span class="key"><span class="swatch" style="background:var(--brand-strong)"></span>marginal unit</span>`;
+    if (R.gens.some((g) => g.status === "ramp")) lg += `<span class="key"><span class="swatch" style="background:var(--s7)"></span>held by ramp limit</span>`;
+    if (R.lines.some((l) => !l.on) || R.gens.some((g) => g.status === "out")) lg += `<span class="key"><span class="swatch" style="background:repeating-linear-gradient(90deg,var(--muted) 0 5px,transparent 5px 9px)"></span>out of service</span>`;
     if (N.settings.congestion) lg += `<span class="key"><span class="swatch" style="background:var(--bind)"></span>binding limit</span>`;
     lg += `<span class="key">line width ∝ flow</span>`;
   } else if (mode === "build") lg = `<span class="key">Drag buses to arrange the diagram. Line labels show reactance (pu)${N.settings.congestion ? " and limit (MW)" : ""}.</span>`;
@@ -911,9 +1359,13 @@ function draw() {
 
 function drawKpis() {
   const show = showResults(), t = show ? R.totals : null;
-  const tl = N.buses.reduce((a, b) => a + (+b.load || 0), 0);
-  const items = [["Total cost", show ? money(R.obj) : "—"], ["Generation", show ? f1(t.gen) + " MW" : "—"], ["Load", f1(tl) + " MW"], ["Losses", show ? f1(t.losses) + " MW" : "—"], ["Merchandising surplus", show ? money(t.surplus) : "—"]];
+  const tl = show ? t.load : N.buses.reduce((a, b) => a + effLoad(b, curP), 0);
+  const bids = N.buses.some((b) => b.bids.length);
+  const items = [[bids ? "Cost − bid value" : "Total cost", show ? money(R.obj) : "—"], ["Generation", show ? f1(t.gen) + " MW" : "—"], ["Load", f1(tl) + " MW"]];
+  if (bids) items.push(["Bids cleared", show ? f1(t.flex) + " MW" : "—"]);
+  items.push(["Losses", show ? f1(t.losses) + " MW" : "—"], ["Merchandising surplus", show ? money(t.surplus) : "—"]);
   if (show && t.shed > 0.05) items.push(["Unserved", f1(t.shed) + " MW"]);
+  if (show && T() > 1) items.push([`Day total (${mkt === "rt" ? "RT" : dart() ? "DA" : "all periods"})`, money(R.dayObj)]);
   $("kpis").innerHTML = items.map(([l, v]) => `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div></div>`).join("");
   $("kpis").hidden = mode !== "market";
 }
@@ -926,17 +1378,18 @@ function drawStatus() {
   else { st.textContent = "Optimal" + (N.settings.losses ? ` · ${R.iterations} loss iteration${R.iterations === 1 ? "" : "s"}` : ""); if (V.warnings.length) st.classList.add("warn"); }
   const extra = [];
   if (R && R.ok && R.totals.shed > 0.05 && showResults()) extra.push({ t: `${f1(R.totals.shed)} MW of load is unserved and priced at VOLL ($${f2(N.settings.voll)}/MWh).` });
-  if (N.settings.losses && N.gens.some((g) => g.offer < 0)) extra.push({ t: "Negative offers with losses: the market prefers to burn energy as losses. This is non-convex, so the result shown is one valid outcome." });
+  if (N.settings.losses && N.gens.some((g) => g.blocks.some((b) => b.price < 0))) extra.push({ t: "Negative offers with losses: the market prefers to burn energy as losses. This is non-convex, so the result shown is one valid outcome." });
   const list = [...V.errors.map((e) => ({ ...e, err: true })), ...V.warnings, ...extra];
   $("issues").innerHTML = list.map((e, k) => `<div class="issue${e.err ? " err" : ""}" ${e.sel ? `data-issue="${k}" style="cursor:pointer"` : ""}>${esc(e.t)}</div>`).join("");
   $("issues")._list = list;
   $("okMsg").hidden = list.length > 0;
-  $("revealBtn").hidden = !(mode === "market" && hidden && !revealed);
-  $("optLoss").checked = !!N.settings.losses; $("optCong").checked = !!N.settings.congestion; $("optHide").checked = hidden;
+  $("optLoss").checked = !!N.settings.losses; $("optCong").checked = !!N.settings.congestion;
   const ref = optsFrom().ref;
   $("refBus").innerHTML = N.buses.map((b) => `<option value="${b.id}">Bus ${b.id}</option>`).join("");
   if (ref !== null) $("refBus").value = ref;
   if (document.activeElement !== $("voll")) $("voll").value = N.settings.voll;
+  $("optPeriods").value = T(); $("optMarket").value = N.settings.market;
+  drawViewbar(); drawRtPanel();
 }
 
 function numField(path, val, step, label, unit, extra = "") {
@@ -961,9 +1414,19 @@ function renderInspector(el) {
   if (sel && sel.kind === "bus") {
     const b = busById(sel.id); if (!b) { sel = null; return renderInspector(el); }
     const i = N.buses.indexOf(b), gens = N.gens.filter((g) => g.bus === b.id), nl = N.lines.filter((l) => l.from === b.id || l.to === b.id).length;
-    let h = `<h3>Bus ${b.id}</h3><div class="form">${numField(`bus.${b.id}.load`, b.load, 10, "Load", "MW", 'min="0"')}</div>`;
+    let h = `<h3>Bus ${b.id}</h3><div class="form">`;
+    if (T() === 1) h += numField(`bus.${b.id}.load`, b.load, 10, "Load", "MW", 'min="0"');
+    else {
+      h += numField(`bus.${b.id}.load`, b.load, 10, "Base load", "MW", 'min="0"');
+      for (let t = 0; t < T(); t++) h += numField(`bus.${b.id}.loadP.${t}`, g0(effLoad(b, t)), 10, `Period ${t + 1}`, "MW", 'min="0"');
+    }
+    h += `</div>`;
+    if (T() > 1) h += `<div class="small" style="margin-top:4px">${b.loadP ? `Period loads set by hand. <button class="btn sm" type="button" data-act="resetLoadP">Use base × profile</button>` : "Period loads = base load × the load profile (Buses tab). Type a value to set it by hand."}</div>`;
+    h += `<div class="subh">Demand bids <span class="small">(price-responsive load, every period)</span></div>`;
+    if (b.bids.length) h += `<div class="blocks"><span class="h">MW</span><span class="h">Bid $/MWh</span><span></span>${b.bids.map((x, q) => `<input type="number" data-path="bus.${b.id}.bids.${q}.mw" value="${x.mw}" step="10" min="0" aria-label="Bid ${q + 1} MW"><input type="number" data-path="bus.${b.id}.bids.${q}.price" value="${x.price}" step="1" aria-label="Bid ${q + 1} price"><button class="xbtn" type="button" data-act="delBid" data-q="${q}" aria-label="Remove bid">×</button>`).join("")}</div>`;
+    h += `<div class="row" style="margin-top:6px"><button class="btn sm" type="button" data-act="addBid">Add bid block</button></div>`;
     h += `<div class="small" style="margin-top:8px">${nl} line${nl === 1 ? "" : "s"} · ${gens.length ? "generators " + gens.map((g) => esc(g.name)).join(", ") : "no generators"}</div>`;
-    if (showResults()) { const c = R.comp[i]; h += `<div class="small ires" style="margin-top:6px">LMP <b class="num">${money(R.lmp[i])}</b> = energy ${money(c.energy)} ${signed(c.loss)} loss ${signed(c.cong)} congestion</div>`; }
+    if (showResults()) { const c = R.comp[i], ld = R.loads[i]; h += `<div class="small ires" style="margin-top:6px">LMP <b class="num">${money(R.lmp[i])}</b> = energy ${money(c.energy)} ${signed(c.loss)} loss ${signed(c.cong)} congestion${b.bids.length ? `<br>Bids cleared <b class="num">${f1(ld.flex)} MW</b> of ${f1(b.bids.reduce((a, x) => a + (+x.mw || 0), 0))}` : ""}${mkt === "rt" ? `<br>Real-time load ${f1(ld.d)} MW` : ""}</div>`; }
     if (mode === "build") h += `<div class="row"><button class="btn sm" type="button" data-act="addGenHere">Add generator here</button><button class="btn sm danger" type="button" data-act="delete">Delete bus</button></div>`;
     el.innerHTML = h;
   } else if (sel && sel.kind === "line") {
@@ -972,7 +1435,8 @@ function renderInspector(el) {
     let h = `<h3>Line ${lineLabel(l)}</h3><div class="form">`;
     if (mode === "build") h += busSelect(`line.${l.id}.from`, l.from, "From") + busSelect(`line.${l.id}.to`, l.to, "To");
     h += numField(`line.${l.id}.x`, l.x, 0.01, "Reactance x", "pu", 'min="0.001"') + numField(`line.${l.id}.r`, l.r, 0.001, "Resistance r", "pu", 'min="0"') + numField(`line.${l.id}.rating`, l.rating, 10, "Limit", "MW", 'min="1"') + `</div>`;
-    if (showResults()) { const r = R.lines[j]; h += `<div class="small ires" style="margin-top:8px">Flow <b class="num">${f1(Math.abs(r.F))} MW</b> ${r.F >= 0 ? `${l.from}→${l.to}` : `${l.to}→${l.from}`} · ${(r.loading * 100).toFixed(0)}% of limit${r.binding ? ` · binding, μ = ${money(r.mu)}` : ""}</div>`; }
+    if (showResults() && !R.lines[j].on) h += `<div class="small ires" style="margin-top:8px"><b>Out of service</b> in this period (real-time event).</div>`;
+    else if (showResults()) { const r = R.lines[j]; h += `<div class="small ires" style="margin-top:8px">Flow <b class="num">${f1(Math.abs(r.F))} MW</b> ${r.F >= 0 ? `${l.from}→${l.to}` : `${l.to}→${l.from}`} · ${(r.loading * 100).toFixed(0)}% of limit${r.binding ? ` · binding, μ = ${money(r.mu)}` : ""}</div>`; }
     if (mode === "build") h += `<div class="row"><button class="btn sm danger" type="button" data-act="delete">Delete line</button></div>`;
     el.innerHTML = h;
   } else if (sel && sel.kind === "gen") {
@@ -980,8 +1444,11 @@ function renderInspector(el) {
     const k = N.gens.indexOf(g);
     let h = `<h3>Generator ${esc(g.name)}</h3><div class="form">`;
     if (mode === "build") h += `<label for="f-gen.${g.id}.name">Name</label><input type="text" id="f-gen.${g.id}.name" data-path="gen.${g.id}.name" value="${esc(g.name)}" maxlength="8">` + busSelect(`gen.${g.id}.bus`, g.bus, "Bus");
-    h += numField(`gen.${g.id}.cap`, g.cap, 10, "Capacity", "MW", 'min="0"') + numField(`gen.${g.id}.offer`, g.offer, 1, "Offer", "$/MWh") + `</div>`;
-    if (showResults()) { const r = R.gens[k]; h += `<div class="small ires" style="margin-top:8px">Dispatch <b class="num">${f1(r.p)} MW</b> · ${r.status === "marginal" ? "marginal" : r.status === "full" ? "at capacity" : "off"} · paid ${money(r.price)}/MWh</div>`; }
+    if (T() > 1) h += `<label for="f-gen.${g.id}.ramp">Ramp limit <span class="unit">MW/period</span></label><input type="number" id="f-gen.${g.id}.ramp" data-path="gen.${g.id}.ramp" value="${g.ramp ?? ""}" step="10" min="0" placeholder="none">`;
+    h += `</div><div class="subh">Offer curve <span class="small">(blocks in merit order)</span></div>`;
+    h += `<div class="blocks"><span class="h">MW</span><span class="h">Offer $/MWh</span><span></span>${g.blocks.map((b, q) => `<input type="number" data-path="gen.${g.id}.blocks.${q}.mw" value="${b.mw}" step="10" min="0" aria-label="Block ${q + 1} MW"><input type="number" data-path="gen.${g.id}.blocks.${q}.price" value="${b.price}" step="1" aria-label="Block ${q + 1} price">${g.blocks.length > 1 ? `<button class="xbtn" type="button" data-act="delBlock" data-q="${q}" aria-label="Remove block">×</button>` : "<span></span>"}`).join("")}</div>`;
+    h += `<div class="row" style="margin-top:6px"><button class="btn sm" type="button" data-act="addBlock" ${g.blocks.length >= 5 ? "disabled" : ""}>Add block</button><span class="small">Total ${g0(g.cap)} MW</span></div>`;
+    if (showResults()) { const r = R.gens[k]; h += `<div class="small ires" style="margin-top:8px">Dispatch <b class="num">${f1(r.p)} MW</b> · ${STATUS_TXT[r.status]} · paid ${money(r.price)}/MWh${g.blocks.length > 1 ? `<br>Blocks: ${r.blocks.map((x, q) => `${f1(x)}/${g0(g.blocks[q].mw)}`).join(" · ")}` : ""}${r.availCap < g.cap - 1e-6 ? `<br>Available ${f1(r.availCap)} MW (real-time event)` : ""}</div>`; }
     if (mode === "build") h += `<div class="row"><button class="btn sm danger" type="button" data-act="delete">Delete generator</button></div>`;
     el.innerHTML = h;
   } else {
@@ -991,15 +1458,25 @@ function renderInspector(el) {
   }
 }
 
+const STATUS_TXT = { off: "off", full: "at capacity", marginal: "marginal", ramp: "held by ramp limit", out: "out of service" };
+const STATUS_CHIP = { full: '<span class="chip full">at capacity</span>', marginal: '<span class="chip marg">marginal</span>', ramp: '<span class="chip ramp">ramp limit</span>', out: '<span class="chip out">out</span>', off: '<span class="chip">off</span>' };
 /* ---------- editing ---------- */
 function setPath(path, raw) {
-  const [kind, id, field] = path.split(".");
+  const [kind, id, field, a, b] = path.split(".");
+  if (kind === "prof") { const v = parseFloat(raw); if (raw === "" || !isFinite(v)) return null; N.settings.profile[+id] = v; return true; }
   const obj = kind === "bus" ? busById(+id) : kind === "line" ? N.lines.find((x) => x.id === +id) : N.gens.find((x) => x.id === +id);
   if (!obj) return false;
   if (field === "name") { obj.name = String(raw).trim().slice(0, 8) || obj.name; return true; }
   if (field === "from" || field === "to" || field === "bus") { obj[field] = +raw; return "struct"; }
+  if (field === "ramp" && raw === "") { obj.ramp = null; return true; }
   const v = parseFloat(raw);
   if (raw === "" || !isFinite(v)) return null;
+  if (kind === "bus" && field === "loadP") {
+    if (!obj.loadP) obj.loadP = Array.from({ length: T() }, (_, t) => effLoad(obj, t));
+    obj.loadP[+a] = v; return true;
+  }
+  if (field === "blocks" || field === "bids") { const it = obj[field][+a]; if (!it) return false; it[b] = v; if (kind === "gen") syncGen(obj); return true; }
+  if (kind === "gen" && (field === "cap" || field === "offer")) { obj.blocks[0][field === "cap" ? "mw" : "price"] = v; syncGen(obj); return true; }
   obj[field] = v; return true;
 }
 let focusSnap = null;
@@ -1017,7 +1494,7 @@ function onFieldInput(e) {
 function addBus(x, y) {
   if (N.buses.length >= LIM.buses) return flash(`This version supports up to ${LIM.buses} buses.`);
   snapshot();
-  const id = nextId(N.buses); N.buses.push({ id, x: clamp(Math.round(x), 30, W - 30), y: clamp(Math.round(y), 30, H - 30), load: 0 });
+  const id = nextId(N.buses); N.buses.push({ id, x: clamp(Math.round(x), 30, W - 30), y: clamp(Math.round(y), 30, H - 30), load: 0, bids: [], loadP: null });
   if (N.settings.ref == null) N.settings.ref = id;
   sel = { kind: "bus", id }; refresh(true);
 }
@@ -1033,7 +1510,7 @@ function addGen(bus) {
   snapshot();
   const id = nextId(N.gens); let n = N.gens.length + 1, name = "G" + n;
   while (N.gens.some((g) => g.name === name)) name = "G" + ++n;
-  N.gens.push({ id, name, bus, cap: 100, offer: 20 });
+  N.gens.push({ id, name, bus, cap: 100, offer: 20, ramp: null, blocks: [{ mw: 100, price: 20 }] });
   sel = { kind: "gen", id }; refresh(true);
 }
 function del(kind, id) {
@@ -1123,9 +1600,16 @@ document.addEventListener("keydown", (e) => {
 
 /* ---------- tabs ---------- */
 const DATA_TABS = [["buses", "Buses"], ["lines", "Lines"], ["gens", "Generators"]];
-const RES_TABS = [["prices", "Prices"], ["settle", "Dispatch & settlement"], ["flows", "Line flows"], ["plus1", "+1 MW test"], ["compare", "Compare"], ["lp", "Formulation"]];
+const isInputTab = (t) => DATA_TABS.some((d) => d[0] === t);
+function resTabs() {
+  const r = [["prices", "Prices"], ["settle", "Dispatch & settlement"], ["flows", "Line flows"], ["plus1", "+1 MW test"]];
+  if (T() > 1) r.push(["periods", "Periods"]);
+  if (dart()) r.push(["dart", "DA vs RT"]);
+  r.push(["statement", "Settlement statement"], ["compare", "Compare"]);
+  return r;
+}
 function drawTabs() {
-  const avail = mode === "build" ? DATA_TABS : [...RES_TABS, null, ...DATA_TABS];
+  const avail = mode === "build" ? DATA_TABS : [...resTabs(), null, ...DATA_TABS];
   if (!avail.some((t) => t && t[0] === tab)) tab = avail[0][0];
   $("tabs").innerHTML = avail.map((t) => (t ? `<button class="tab" role="tab" type="button" data-tab="${t[0]}" aria-selected="${t[0] === tab}">${t[1]}</button>` : `<span class="tabsep" aria-hidden="true"></span>`)).join("");
 }
@@ -1136,11 +1620,10 @@ function drawTab() {
   if (tab === "buses") return (body.innerHTML = busesTable());
   if (tab === "lines") return (body.innerHTML = linesTable());
   if (tab === "gens") return (body.innerHTML = gensTable());
-  if (tab === "lp") return (body.innerHTML = lpView());
   if (!R || !R.ok) return (body.innerHTML = `<div class="empty"><strong>No results yet</strong>${esc(V.errors.length ? "Fix the items under Network checks first." : R ? R.status : "")}</div>`);
-  if (!showResults()) return (body.innerHTML = `<div class="empty"><strong>Results are hidden</strong>Write down your prediction for the dispatch, flows and prices, then press <b>Reveal results</b>.</div>`);
-  body.innerHTML = { prices: pricesView, settle: settleView, flows: flowsView, plus1: plus1View, compare: compareView }[tab]();
+  body.innerHTML = { prices: pricesView, settle: settleView, flows: flowsView, plus1: plus1View, compare: compareView, periods: periodsView, dart: dartView, statement: statementView }[tab]();
   if (tab === "plus1") runPlus1();
+  bindCharts(body);
 }
 function highlightRow() {
   document.querySelectorAll("#tabBody tr[data-sel]").forEach((tr) => tr.classList.toggle("sel", !!sel && tr.dataset.sel === `${sel.kind}:${sel.id}`));
@@ -1150,12 +1633,20 @@ function highlightRow() {
 const ni = (path, v, step, extra = "") => `<input type="number" data-path="${path}" value="${v}" step="${step}" aria-label="${path}" ${extra}>`;
 const bs = (path, v) => `<select data-path="${path}" aria-label="${path}">${N.buses.map((b) => `<option value="${b.id}" ${b.id === v ? "selected" : ""}>${b.id}</option>`).join("")}</select>`;
 function busesTable() {
-  let h = `<div class="scroll"><table class="edit"><thead><tr><th>Bus</th><th class="n">Load MW</th><th class="n">Lines</th><th>Generators</th><th></th></tr></thead><tbody>`;
+  const nT = T();
+  let h = "";
+  if (nT > 1) {
+    h += `<div class="ctrl" style="margin-bottom:10px"><span class="small" style="align-self:center">Load profile (× base load)</span>${N.settings.profile.map((m, t) => `<label>P${t + 1}<input type="number" data-path="prof.${t}" value="${m}" step="0.05" min="0" style="min-width:70px;max-width:90px"></label>`).join("")}<button class="btn sm" type="button" data-act="resetAllLoadP">Reset all buses to base × profile</button></div>`;
+  }
+  h += `<div class="scroll"><table class="edit"><thead><tr><th>Bus</th><th class="n">${nT > 1 ? "Base MW" : "Load MW"}</th>${nT > 1 ? N.settings.profile.map((_, t) => `<th class="n">P${t + 1} MW</th>`).join("") : ""}<th>Demand bids</th><th class="n">Lines</th><th>Generators</th><th></th></tr></thead><tbody>`;
   N.buses.forEach((b) => {
     const nl = N.lines.filter((l) => l.from === b.id || l.to === b.id).length, gs = N.gens.filter((g) => g.bus === b.id).map((g) => esc(g.name)).join(", ");
-    h += `<tr data-sel="bus:${b.id}"><td><b>${b.id}</b></td><td style="max-width:140px">${ni(`bus.${b.id}.load`, b.load, 10, 'min="0"')}</td><td class="n">${nl}</td><td>${gs || "—"}</td><td>${mode === "build" ? `<button class="btn sm danger" type="button" data-del="bus:${b.id}">Delete</button>` : ""}</td></tr>`;
+    const per = nT > 1 ? N.settings.profile.map((_, t) => `<td style="max-width:110px">${ni(`bus.${b.id}.loadP.${t}`, g0(effLoad(b, t)), 10, `min="0" ${b.loadP ? "" : 'style="color:var(--muted)"'}`)}</td>`).join("") : "";
+    const bids = b.bids.length ? b.bids.map((x) => `${g0(x.mw)}@${money(x.price)}`).join(", ") : "—";
+    h += `<tr data-sel="bus:${b.id}"><td><b>${b.id}</b></td><td style="max-width:140px">${ni(`bus.${b.id}.load`, b.load, 10, 'min="0"')}</td>${per}<td class="small">${bids}</td><td class="n">${nl}</td><td>${gs || "—"}</td><td>${mode === "build" ? `<button class="btn sm danger" type="button" data-del="bus:${b.id}">Delete</button>` : ""}</td></tr>`;
   });
   h += `</tbody></table></div>`;
+  if (nT > 1) h += `<div class="small" style="margin-top:6px">Grey period values follow base × profile. Typing a period value fixes that bus's loads by hand. Add demand bids in the bus panel on the right.</div>`;
   if (mode === "build") h += `<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="tblAddBus">Add bus</button><span class="small">New buses appear in an empty spot; drag them where you want.</span></div>`;
   return h + (N.buses.length ? "" : `<div class="empty">No buses yet.</div>`);
 }
@@ -1169,12 +1660,16 @@ function linesTable() {
   return h + (N.lines.length ? "" : `<div class="empty">No lines yet.</div>`);
 }
 function gensTable() {
-  let h = `<div class="scroll"><table class="edit"><thead><tr><th>Name</th><th>Bus</th><th class="n">Capacity MW</th><th class="n">Offer $/MWh</th><th></th></tr></thead><tbody>`;
+  let h = `<div class="scroll"><table class="edit"><thead><tr><th>Name</th><th>Bus</th><th class="n">Capacity MW</th><th class="n">Offer $/MWh</th>${T() > 1 ? '<th class="n">Ramp MW/period</th>' : ""}<th></th></tr></thead><tbody>`;
   N.gens.forEach((g) => {
-    h += `<tr data-sel="gen:${g.id}"><td>${mode === "build" ? `<input type="text" data-path="gen.${g.id}.name" value="${esc(g.name)}" maxlength="8" aria-label="Name" style="max-width:90px">` : `<b>${esc(g.name)}</b>`}</td><td>${mode === "build" ? bs(`gen.${g.id}.bus`, g.bus) : g.bus}</td><td>${ni(`gen.${g.id}.cap`, g.cap, 10, 'min="0"')}</td><td>${ni(`gen.${g.id}.offer`, g.offer, 1)}</td><td>${mode === "build" ? `<button class="btn sm danger" type="button" data-del="gen:${g.id}">Delete</button>` : ""}</td></tr>`;
+    const one = g.blocks.length === 1;
+    const cap = one ? ni(`gen.${g.id}.cap`, g.cap, 10, 'min="0"') : `<span class="num">${g0(g.cap)}</span>`;
+    const off = one ? ni(`gen.${g.id}.offer`, g.offer, 1) : `<span class="num small">${g.blocks.map((b) => `${g0(b.mw)}@${money(b.price)}`).join(" · ")}</span>`;
+    h += `<tr data-sel="gen:${g.id}"><td>${mode === "build" ? `<input type="text" data-path="gen.${g.id}.name" value="${esc(g.name)}" maxlength="8" aria-label="Name" style="max-width:90px">` : `<b>${esc(g.name)}</b>`}</td><td>${mode === "build" ? bs(`gen.${g.id}.bus`, g.bus) : g.bus}</td><td class="n">${cap}</td><td class="n">${off}</td>${T() > 1 ? `<td style="max-width:120px"><input type="number" data-path="gen.${g.id}.ramp" value="${g.ramp ?? ""}" step="10" min="0" placeholder="none" aria-label="Ramp"></td>` : ""}<td>${mode === "build" ? `<button class="btn sm danger" type="button" data-del="gen:${g.id}">Delete</button>` : ""}</td></tr>`;
   });
   h += `</tbody></table></div>`;
-  if (mode === "build") h += `<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="tblAddGen" ${N.buses.length ? "" : "disabled"}>Add generator</button><span class="small">Each generator offers its whole capacity at one price. Negative offers are allowed.</span></div>`;
+  h += `<div class="small" style="margin-top:8px">Select a generator to edit its offer curve: up to 5 blocks, prices non-decreasing. Negative offers are allowed.</div>`;
+  if (mode === "build") h += `<div class="row" style="margin-top:10px"><button class="btn sm" type="button" data-act="tblAddGen" ${N.buses.length ? "" : "disabled"}>Add generator</button></div>`;
   return h + (N.gens.length ? "" : `<div class="empty">No generators yet.</div>`);
 }
 
@@ -1190,18 +1685,18 @@ function pricesView() {
 }
 function settleView() {
   const t = R.totals;
-  let h = `<div class="scroll"><table><thead><tr><th>Generator</th><th>Bus</th><th class="n">Offer</th><th class="n">Capacity</th><th class="n">Dispatch MW</th><th>Status</th><th class="n">LMP</th><th class="n">Revenue</th><th class="n">Offer cost</th><th class="n">Profit</th></tr></thead><tbody>`;
+  let h = `<div class="scroll"><table><thead><tr><th>Generator</th><th>Bus</th><th class="n">Offer</th><th class="n">Available</th><th class="n">Dispatch MW</th><th>Status</th><th class="n">LMP</th><th class="n">Revenue</th><th class="n">Offer cost</th><th class="n">Profit</th></tr></thead><tbody>`;
   N.gens.forEach((g, k) => {
     const r = R.gens[k];
-    const chip = r.status === "full" ? '<span class="chip full">at capacity</span>' : r.status === "marginal" ? '<span class="chip marg">marginal</span>' : '<span class="chip">off</span>';
-    h += `<tr data-sel="gen:${g.id}"><td><b>${esc(g.name)}</b></td><td>${g.bus}</td><td class="n">${money(g.offer)}</td><td class="n">${f1(g.cap)}</td><td class="n"><b>${f1(r.p)}</b></td><td>${chip}</td><td class="n">${money(r.price)}</td><td class="n">${money(r.revenue)}</td><td class="n">${money(r.cost)}</td><td class="n">${money(r.profit)}</td></tr>`;
+    const chip = STATUS_CHIP[r.status];
+    h += `<tr data-sel="gen:${g.id}"><td><b>${esc(g.name)}</b></td><td>${g.bus}</td><td class="n">${offerTxt(g)}</td><td class="n">${f1(r.availCap)}</td><td class="n"><b>${f1(r.p)}</b></td><td>${chip}</td><td class="n">${money(r.price)}</td><td class="n">${money(r.revenue)}</td><td class="n">${money(r.cost)}</td><td class="n">${money(r.profit)}</td></tr>`;
   });
   h += `<tr class="tot"><td colspan="4">Total</td><td class="n">${f1(t.gen)}</td><td></td><td></td><td class="n">${money(t.genRev)}</td><td class="n">${money(t.genCost)}</td><td class="n">${money(t.genRev - t.genCost)}</td></tr></tbody></table></div>`;
-  h += `<div class="scroll" style="margin-top:16px"><table><thead><tr><th>Load at bus</th><th class="n">Demand MW</th><th class="n">Unserved MW</th><th class="n">LMP</th><th class="n">Payment</th></tr></thead><tbody>`;
-  N.buses.forEach((b, i) => { const r = R.loads[i]; if (r.d <= 0) return; h += `<tr data-sel="bus:${b.id}"><td><b>Bus ${b.id}</b></td><td class="n">${f1(r.d)}</td><td class="n">${r.shed > 0.05 ? `<span class="pos">${f1(r.shed)}</span>` : "0.0"}</td><td class="n">${money(R.lmp[i])}</td><td class="n">${money(r.payment)}</td></tr>`; });
-  h += `<tr class="tot"><td>Total</td><td class="n">${f1(t.load)}</td><td class="n">${f1(t.shed)}</td><td></td><td class="n">${money(t.loadPay)}</td></tr></tbody></table></div>`;
-  h += `<div class="scroll" style="margin-top:16px"><table style="max-width:520px"><tbody><tr><td>Load payments</td><td class="n">${money(t.loadPay)}</td></tr><tr><td>− Generator revenue</td><td class="n">${money(t.genRev)}</td></tr><tr class="tot"><td>Merchandising surplus</td><td class="n">${money(t.surplus)}</td></tr></tbody></table></div>`;
-  h += `<div class="foot"><p>Generators are paid the LMP at their bus and loads pay the LMP at theirs. Total cost (${money(R.obj)}) is the as-offered cost of the dispatch. The merchandising surplus comes from price differences across lines (losses and congestion); the Line flows tab splits it by line.</p></div>`;
+  h += `<div class="scroll" style="margin-top:16px"><table><thead><tr><th>Load at bus</th><th class="n">Demand MW</th><th class="n">Unserved MW</th><th class="n">Bids cleared MW</th><th class="n">LMP</th><th class="n">Payment</th></tr></thead><tbody>`;
+  N.buses.forEach((b, i) => { const r = R.loads[i]; if (r.d <= 0 && !b.bids.length) return; h += `<tr data-sel="bus:${b.id}"><td><b>Bus ${b.id}</b></td><td class="n">${f1(r.d)}</td><td class="n">${r.shed > 0.05 ? `<span class="pos">${f1(r.shed)}</span>` : "0.0"}</td><td class="n">${b.bids.length ? f1(r.flex) : "—"}</td><td class="n">${money(R.lmp[i])}</td><td class="n">${money(r.payment)}</td></tr>`; });
+  h += `<tr class="tot"><td>Total</td><td class="n">${f1(t.load)}</td><td class="n">${f1(t.shed)}</td><td class="n">${f1(t.flex)}</td><td></td><td class="n">${money(t.loadPay)}</td></tr></tbody></table></div>`;
+  h += `<div class="scroll" style="margin-top:16px"><table style="max-width:520px"><tbody><tr><td>Load payments</td><td class="n">${money(t.loadPay)}</td></tr><tr><td>− Generator revenue</td><td class="n">${money(t.genRev)}</td></tr><tr class="tot"><td>Merchandising surplus${T() > 1 || dart() ? ` (${dart() ? (mkt === "rt" ? "real time, if settled alone" : "day-ahead") : ""}${dart() ? ", " : ""}period ${curP + 1})` : ""}</td><td class="n">${money(t.surplus)}</td></tr><tr><td>&nbsp;&nbsp;of which congestion rent</td><td class="n">${money(t.congRent)}</td></tr><tr><td>&nbsp;&nbsp;of which loss surplus</td><td class="n">${money(t.lossSurplus)}</td></tr></tbody></table></div>`;
+  h += `<div class="foot"><p>${T() > 1 || dart() ? `This tab shows <b>${dart() ? (mkt === "rt" ? "the real-time solution" : "the day-ahead solution") : "one period"}, period ${curP + 1}</b>, as if it settled on its own. The <b>Settlement statement</b> tab combines all periods${dart() ? " and both markets" : ""}. ` : ""}Generators are paid the LMP at their bus and loads pay the LMP at theirs. Congestion rent = Σ congestion component × net withdrawal at each bus; loss surplus is the rest. Total cost (${money(R.obj)}) is the as-offered cost of the dispatch. The merchandising surplus comes from price differences across lines (losses and congestion); the Line flows tab splits it by line.</p></div>`;
   return h;
 }
 function flowsView() {
@@ -1210,8 +1705,8 @@ function flowsView() {
     const r = R.lines[j], dir = r.F >= 0 ? `${l.from}→${l.to}` : `${l.to}→${l.from}`;
     const sent = r.F >= 0 ? r.send : -r.recv, recv = r.F >= 0 ? r.recv : -r.send;
     const cls = r.binding ? "b" : N.settings.congestion && r.loading > 0.9 ? "w" : "";
-    const chip = !N.settings.congestion ? '<span class="chip">limit off</span>' : r.binding ? '<span class="chip bind">binding</span>' : r.loading > 0.9 ? '<span class="chip near">near limit</span>' : '<span class="chip">ok</span>';
-    h += `<tr data-sel="line:${l.id}"><td><b>${dir}</b>${lineLabel(l).includes("#") ? ` <span class="small">#${l.id}</span>` : ""}</td><td class="n"><b>${f1(Math.abs(r.F))}</b></td><td class="n">${f1(sent)}</td><td class="n">${f1(recv)}</td><td class="n">${f2(r.loss)}</td><td class="n">${f1(l.rating)}</td><td><span class="bar ${cls}"><i style="width:${(Math.min(1, r.loading) * 100).toFixed(1)}%"></i></span> <span class="num small">${(r.loading * 100).toFixed(0)}%</span></td><td class="n">${r.binding ? money(r.mu) : "—"}</td><td>${chip}</td><td class="n">${money(r.surplus)}</td></tr>`;
+    const chip = !r.on ? '<span class="chip out">out of service</span>' : !N.settings.congestion ? '<span class="chip">limit off</span>' : r.binding ? '<span class="chip bind">binding</span>' : r.loading > 0.9 ? '<span class="chip near">near limit</span>' : '<span class="chip">ok</span>';
+    h += `<tr data-sel="line:${l.id}"><td><b>${dir}</b>${lineLabel(l).includes("#") ? ` <span class="small">#${l.id}</span>` : ""}</td><td class="n"><b>${f1(Math.abs(r.F))}</b></td><td class="n">${f1(sent)}</td><td class="n">${f1(recv)}</td><td class="n">${f2(r.loss)}</td><td class="n">${f1(r.rating)}</td><td><span class="bar ${cls}"><i style="width:${(Math.min(1, r.loading) * 100).toFixed(1)}%"></i></span> <span class="num small">${(r.loading * 100).toFixed(0)}%</span></td><td class="n">${r.binding ? money(r.mu) : "—"}</td><td>${chip}</td><td class="n">${money(r.surplus)}</td></tr>`;
   });
   h += `</tbody></table></div><div class="foot"><p>DC power flow: F = 100 (θ<sub>from</sub> − θ<sub>to</sub>) / x. Each line loses r·F² (per unit), half at each end. <b>μ</b> is the shadow price of a binding limit: how much total cost would fall per extra MW of limit. <b>Surplus</b> = LMP at the receiving end × MW received − LMP at the sending end × MW sent.</p></div>`;
   return h;
@@ -1219,10 +1714,10 @@ function flowsView() {
 
 let plusCache = null, plusJob = 0;
 function plus1View() {
-  return `<div id="plusBox"><div class="empty">Computing…</div></div><div class="foot"><p>Each row re-solves the whole market with 1 MW more load at one bus. The change in total cost equals that bus's LMP. "Responding generators" shows which marginal units cover the extra MW. With binding limits, more than one moves, in proportions set by the network.</p><p>A row marked "differs" means the extra MW crossed a breakpoint (a unit reached capacity or a line reached its limit). There the LMP is not unique: any value between the costs just below and just above the breakpoint is valid.</p></div>`;
+  return `<div id="plusBox"><div class="empty">Computing…</div></div><div class="foot"><p>Each row re-solves the whole market with 1 MW more load at one bus${T() > 1 ? ` in period ${curP + 1}. The change is measured in the cost of the whole day, because ramp limits can make other periods respond too` : ""}. The change in total cost equals that bus's LMP. "Responding generators" shows which marginal units cover the extra MW. With binding limits, more than one moves, in proportions set by the network.</p><p>A row marked "differs" means the extra MW crossed a breakpoint (a unit reached capacity or a line reached its limit). There the LMP is not unique: any value between the costs just below and just above the breakpoint is valid.</p></div>`;
 }
 function runPlus1() {
-  const key = JSON.stringify([N.buses.map((b) => b.load), N.lines, N.gens, N.settings]);
+  const key = JSON.stringify([N.buses, N.lines, N.gens, N.settings, N.rt, curP, mkt]);
   const box = () => $("plusBox");
   const render = (rows, done) => {
     if (!box()) return;
@@ -1238,16 +1733,16 @@ function runPlus1() {
     box().innerHTML = h; highlightRow();
   };
   if (plusCache && plusCache.key === key && plusCache.done) return render(plusCache.rows, true);
-  const job = ++plusJob, rows = [], base = R, sys0 = sysFrom(), opt = optsFrom();
+  const job = ++plusJob, rows = [], base = R, sys0 = marketSys(mkt === "rt"), opt = optsFrom(), obj0 = resOf(mkt).obj, t0 = curP;
   plusCache = { key, rows, done: false };
   let i = 0;
   const step = () => {
     if (job !== plusJob) return;
     if (i >= N.buses.length) { plusCache.done = true; render(rows, true); return; }
     const b = N.buses[i];
-    const sys = JSON.parse(JSON.stringify(sys0)); sys.loads[b.id] = (sys.loads[b.id] || 0) + 1;
-    const r = E.solve(sys, opt);
-    rows[i] = !r.ok ? { b: b.id, ok: false } : { b: b.id, ok: true, d: r.obj - base.obj, lmp: base.lmp[i], moves: N.gens.map((g, k) => [g.name, r.gens[k].p - base.gens[k].p]).filter(([, d]) => Math.abs(d) > 0.0005), dLoss: r.totals.losses - base.totals.losses, dShed: r.totals.shed - base.totals.shed };
+    const sys = cloneSys(sys0); sys.per[t0].loads[b.id] = (sys.per[t0].loads[b.id] || 0) + 1;
+    const rr = E.solveMarket(sys, opt), r = rr.ok ? rr.periods[t0] : null;
+    rows[i] = !rr.ok ? { b: b.id, ok: false } : { b: b.id, ok: true, d: rr.obj - obj0, lmp: base.lmp[i], moves: N.gens.map((g, k) => [g.name, r.gens[k].p - base.gens[k].p]).filter(([, d]) => Math.abs(d) > 0.0005), dLoss: r.totals.losses - base.totals.losses, dShed: r.totals.shed - base.totals.shed - 0 };
     i++; render(rows, false); setTimeout(step, 0);
   };
   setTimeout(step, 0);
@@ -1274,53 +1769,266 @@ function compareView() {
   return h + `</tbody></table></div><div class="foot"><p>Flows are signed, positive in the from→to direction.</p></div>`;
 }
 
-function lpView() {
-  if (!N.buses.length) return `<div class="empty">Add buses to see the formulation.</div>`;
-  const opt = optsFrom(), Fv = R && R.ok && opt.losses ? R.lines.map((l) => l.F) : N.lines.map(() => 0);
-  const num = (v) => { const a = Math.abs(v); return Math.abs(a - 1) < 1e-12 ? "" : (+a.toPrecision(6)) + " "; };
-  const expr = (pairs) => pairs.filter(([, c]) => Math.abs(c) > 1e-12).map(([n, c], i) => `${c < 0 ? (i ? " − " : "−") : i ? " + " : ""}${num(c)}${n}`).join("") || "0";
-  const Fn = (l) => `F_${l.from}_${l.to}${lineLabel(l).includes("#") ? "#" + l.id : ""}`;
-  let t = `<span class="c">// Minimise the as-offered cost of energy (plus unserved load U at VOLL)</span>\n<span class="k">min</span>  ${expr([...N.gens.map((g) => [`P_${g.name}`, +g.offer]), ...N.buses.filter((b) => b.load > 0).map((b) => [`U_${b.id}`, opt.voll])])}\n\n<span class="k">subject to</span>\n<span class="c">// Power balance at each bus. Dual variable λ_i = LMP_i</span>\n`;
-  N.buses.forEach((b, i) => {
-    const pairs = N.gens.filter((g) => g.bus === b.id).map((g) => [`P_${g.name}`, 1]);
-    if (b.load > 0) pairs.push([`U_${b.id}`, 1]);
-    let rhs = +b.load || 0;
-    N.lines.forEach((l, j) => {
-      if (l.from !== b.id && l.to !== b.id) return;
-      let c = (l.from === b.id ? -1 : 0) + (l.to === b.id ? 1 : 0);
-      if (opt.losses) { const rr = l.r / 100; c -= rr * Fv[j]; rhs -= 0.5 * rr * Fv[j] * Fv[j]; }
-      pairs.push([Fn(l), c]);
-    });
-    t += `  bal_${b.id}:  ${expr(pairs)} = ${+rhs.toPrecision(7)}${R && R.ok ? `   <span class="c">[λ = ${money(R.lmp[i])}]</span>` : ""}\n`;
-  });
-  t += `\n<span class="c">// DC power flow (MW, θ in radians; one angle per island fixed at 0)</span>\n`;
-  N.lines.forEach((l) => (t += `  ${Fn(l)} = ${+(100 / l.x).toPrecision(6)} (θ_${l.from} − θ_${l.to})\n`));
-  if (opt.congestion) {
-    t += `\n<span class="c">// Line limits. Shadow price μ ≥ 0 when binding</span>\n`;
-    N.lines.forEach((l, j) => (t += `  −${g0(l.rating)} ≤ ${Fn(l)} ≤ ${g0(l.rating)}${R && R.ok && R.lines[j].binding ? `   <span class="c">[μ = ${money(R.lines[j].mu)}]</span>` : ""}\n`));
-  }
-  t += `\n<span class="c">// Generator and unserved-load limits</span>\n`;
-  N.gens.forEach((g) => (t += `  0 ≤ P_${g.name} ≤ ${g0(g.cap)}\n`));
-  N.buses.forEach((b) => { if (b.load > 0) t += `  0 ≤ U_${b.id} ≤ ${g0(b.load)}\n`; });
-  let h = `<pre class="lp">${t}</pre><div class="foot"><p>This is the linear program for the current network, written with flow variables for readability. Internally the solver substitutes the flow equations into the balances and limits; the optimum and the duals are the same.</p>`;
-  if (opt.losses) h += `<p>With losses on, each line's loss r·F² is linearised around the previous flow F⁰ as r(2F⁰F − F⁰²), half at each end. That gives the extra coefficients on F and the constants on the right. The LP is re-solved until the flows stop changing.</p>`;
-  return h + `</div>`;
+/* ---------- charts (shared by the new tabs) ---------- */
+const SER = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(--s6)", "var(--s7)", "var(--s8)"];
+const CHARTS = {};
+let chartSeq = 0;
+function niceTicks(lo, hi, n) {
+  if (!(hi > lo)) { hi = lo + 1; lo = lo - 1; }
+  const raw = (hi - lo) / n, mag = Math.pow(10, Math.floor(Math.log10(raw))), st = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((m) => m >= raw) || raw;
+  const a = Math.floor(lo / st) * st, b = Math.ceil(hi / st) * st, out = [];
+  for (let v = a; v <= b + st * 1e-6; v += st) out.push(+v.toPrecision(12));
+  return out;
 }
+// o = { series:[{name, color, pts:[[x,y]]}], xLabel, yLabel, xFmt, yFmt, vlines:[{x,label}], yMax, cats }
+function lineChart(o) {
+  const id = "c" + ++chartSeq, Wd = 760, Ht = o.height || 270, m = { l: 64, r: 18, t: 16, b: 42 };
+  const pts = o.series.flatMap((s) => s.pts);
+  if (!pts.length) return "";
+  let x0 = Math.min(...pts.map((p) => p[0])), x1 = Math.max(...pts.map((p) => p[0]));
+  if (x1 === x0) { x0 -= 1; x1 += 1; }
+  let ylo = Math.min(0, ...pts.map((p) => p[1])), yhi = Math.max(...pts.map((p) => p[1]));
+  if (o.yMax !== undefined && yhi > o.yMax) yhi = o.yMax;
+  const yt = niceTicks(ylo, yhi, 5); ylo = yt[0]; yhi = yt[yt.length - 1];
+  const X = (v) => m.l + ((v - x0) / (x1 - x0)) * (Wd - m.l - m.r), Y = (v) => m.t + (1 - (Math.min(v, yhi) - ylo) / (yhi - ylo)) * (Ht - m.t - m.b);
+  const xt = o.cats ? o.cats.map((_, i) => i) : niceTicks(x0, x1, 6).filter((v) => v >= x0 - 1e-9 && v <= x1 + 1e-9);
+  const yF = o.yFmt || ((v) => "$" + (+v.toPrecision(6)).toLocaleString("en-US")), xF = o.xFmt || ((v) => (o.cats ? o.cats[v] : (+v.toPrecision(6)).toLocaleString("en-US")));
+  let s = `<svg viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="${esc(o.title || "chart")}">`;
+  yt.forEach((v) => (s += `<line x1="${m.l}" x2="${Wd - m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)" stroke-width="1"/><text x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end">${yF(v)}</text>`));
+  if (ylo < 0 && yhi > 0) s += `<line x1="${m.l}" x2="${Wd - m.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--muted)" stroke-width="1"/>`;
+  xt.forEach((v) => (s += `<text x="${X(v)}" y="${Ht - m.b + 16}" text-anchor="middle">${xF(v)}</text>`));
+  s += `<line x1="${m.l}" x2="${Wd - m.r}" y1="${Ht - m.b}" y2="${Ht - m.b}" stroke="var(--rule)"/>`;
+  if (o.xLabel) s += `<text x="${(m.l + Wd - m.r) / 2}" y="${Ht - 6}" text-anchor="middle">${esc(o.xLabel)}</text>`;
+  if (o.yLabel) s += `<text x="14" y="${(m.t + Ht - m.b) / 2}" text-anchor="middle" transform="rotate(-90 14 ${(m.t + Ht - m.b) / 2})">${esc(o.yLabel)}</text>`;
+  (o.vlines || []).forEach((v) => (s += `<line x1="${X(v.x)}" x2="${X(v.x)}" y1="${m.t}" y2="${Ht - m.b}" stroke="${v.color || "var(--muted)"}" stroke-width="1" stroke-dasharray="${v.solid ? "" : "3 4"}"/>${v.label ? `<text x="${X(v.x) + 4}" y="${m.t + 10 + (v.row || 0) * 13}" style="fill:var(--ink)">${esc(v.label)}</text>` : ""}`));
+  o.series.forEach((se) => {
+    const d = se.pts.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("");
+    s += `<path d="${d}" fill="none" stroke="${se.color}" stroke-width="${se.width || 2}" stroke-linejoin="round" stroke-linecap="round" ${se.dash ? 'stroke-dasharray="6 4"' : ""}/>`;
+    if (se.pts.length <= 30) se.pts.forEach((p) => (s += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="4" fill="${se.color}" stroke="var(--panel)" stroke-width="2"/>`));
+  });
+  s += `<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${Ht - m.b}" stroke="var(--muted)" stroke-width="1" visibility="hidden"/>`;
+  s += `<rect x="${m.l}" y="${m.t}" width="${Wd - m.l - m.r}" height="${Ht - m.t - m.b}" fill="transparent" data-hit="1"/></svg>`;
+  CHARTS[id] = { o, X, x0, x1, m, Wd, xF, yF };
+  const legend = o.series.length > 1 ? `<div class="legend" style="margin-top:4px">${o.series.map((se) => `<span class="key"><span class="swatch" style="background:${se.color}${se.dash ? ";background:repeating-linear-gradient(90deg," + se.color + " 0 6px,transparent 6px 10px)" : ""}"></span>${esc(se.name)}</span>`).join("")}</div>` : "";
+  return `<div class="chart" data-chart="${id}">${s}<div class="tip" hidden></div></div>${legend}`;
+}
+function bindCharts(root) {
+  root.querySelectorAll("[data-chart]").forEach((el) => {
+    const c = CHARTS[el.dataset.chart]; if (!c) return;
+    const svg = el.querySelector("svg"), tip = el.querySelector(".tip"), xh = svg.querySelector(".xh");
+    const xsAll = [...new Set(c.o.series.flatMap((s) => s.pts.map((p) => p[0])))].sort((a, b) => a - b);
+    svg.addEventListener("pointermove", (e) => {
+      const r = svg.getBoundingClientRect(), vx = ((e.clientX - r.left) / r.width) * c.Wd;
+      if (vx < c.m.l - 4 || vx > c.Wd - c.m.r + 4) { tip.hidden = true; xh.setAttribute("visibility", "hidden"); return; }
+      let best = xsAll[0]; xsAll.forEach((x) => { if (Math.abs(c.X(x) - vx) < Math.abs(c.X(best) - vx)) best = x; });
+      xh.setAttribute("x1", c.X(best)); xh.setAttribute("x2", c.X(best)); xh.setAttribute("visibility", "visible");
+      const rows = c.o.series.map((s) => { const p = s.pts.find((q) => q[0] === best); return p ? `<div><i style="background:${s.color}"></i>${esc(s.name)} <b>${(c.o.tipY || c.yF)(p[1])}</b></div>` : ""; }).join("");
+      tip.innerHTML = `<div class="small">${esc(c.o.xLabel || "")} ${c.xF(best)}</div>${rows}${c.o.tipExtra ? c.o.tipExtra(best) : ""}`;
+      tip.hidden = false;
+      const px = (c.X(best) / c.Wd) * r.width;
+      tip.style.left = Math.min(px + 12, r.width - tip.offsetWidth - 4) + "px"; tip.style.top = "8px";
+    });
+    svg.addEventListener("pointerleave", () => { tip.hidden = true; xh.setAttribute("visibility", "hidden"); });
+  });
+}
+
+/* ---------- periods ---------- */
+function periodsView() {
+  const res = resOf(mkt), nT = T(), P = res.periods, cats = P.map((_, t) => "P" + (t + 1));
+  const lbl = dart() ? (mkt === "rt" ? "Real-time" : "Day-ahead") : "";
+  // chart: buses with the most price movement first
+  const spread = N.buses.map((b, i) => [i, Math.max(...P.map((p) => p.lmp[i])) - Math.min(...P.map((p) => p.lmp[i]))]).sort((a, b) => b[1] - a[1] || a[0] - b[0]).slice(0, 8).sort((a, b) => a[0] - b[0]);
+  const series = spread.map(([i], k) => ({ name: `Bus ${N.buses[i].id}`, color: SER[k], pts: P.map((p, t) => [t, p.lmp[i]]) }));
+  let h = `<h3 style="font-size:15px">${lbl} LMP by period</h3>` + lineChart({ title: "LMP by period", series, cats, xLabel: "Period", yLabel: "LMP $/MWh", tipY: money, vlines: [{ x: curP, color: "var(--brand-strong)", solid: true }] });
+  if (N.buses.length > 8) h += `<div class="small">Chart shows the 8 buses whose price moves most; the table has all buses.</div>`;
+  h += `<div class="scroll" style="margin-top:12px"><table><thead><tr><th>Bus</th>${cats.map((c, t) => `<th class="n">${t === curP ? `<span style="color:var(--accent)">${c}</span>` : c}</th>`).join("")}</tr></thead><tbody>`;
+  N.buses.forEach((b, i) => (h += `<tr data-sel="bus:${b.id}"><td><b>Bus ${b.id}</b></td>${P.map((p) => `<td class="n">${money(p.lmp[i])}</td>`).join("")}</tr>`));
+  h += `</tbody></table></div>`;
+  h += `<h3 style="font-size:15px;margin-top:18px">Dispatch by period (MW)</h3><div class="scroll"><table><thead><tr><th>Unit</th><th class="n">Ramp limit</th>${cats.map((c) => `<th class="n">${c}</th>`).join("")}</tr></thead><tbody>`;
+  N.gens.forEach((g, k) => (h += `<tr data-sel="gen:${g.id}"><td><b>${esc(g.name)}</b></td><td class="n">${g.ramp === null ? "—" : g0(g.ramp)}</td>${P.map((p) => { const r = p.gens[k]; return `<td class="n">${f1(r.p)} ${r.status === "ramp" || r.status === "out" ? STATUS_CHIP[r.status] : ""}</td>`; }).join("")}</tr>`));
+  const row = (name, f) => `<tr class="tot"><td colspan="2">${name}</td>${P.map((p) => `<td class="n">${f(p)}</td>`).join("")}</tr>`;
+  h += row("Load MW", (p) => f1(p.totals.load)) + (N.buses.some((b) => b.bids.length) ? row("Bids cleared MW", (p) => f1(p.totals.flex)) : "") + (N.settings.losses ? row("Losses MW", (p) => f1(p.totals.losses)) : "") + row("Cost $", (p) => money(p.obj)) + row("Merch. surplus $", (p) => money(p.totals.surplus));
+  h += `</tbody></table></div><div class="foot"><p>All ${nT} periods are cleared together in one linear program, so a ramp limit can move prices in the periods on both sides of it. A unit marked <span class="chip ramp">ramp limit</span> sits at the edge of its ramp rate; with a ramp row binding, the LMP can differ from every unit's offer.</p></div>`;
+  return h;
+}
+
+/* ---------- day-ahead vs real-time ---------- */
+let dartBus = null;
+function dartView() {
+  const D = RES.da, Rt = RES.rt;
+  if (!Rt || !Rt.ok) return `<div class="empty"><strong>Real-time case has no solution</strong>${esc(Rt ? Rt.status : "")}</div>`;
+  const nT = T(), t0 = curP, d = D.periods[t0], r = Rt.periods[t0];
+  if (dartBus === null || !busById(dartBus)) { let best = 0, bv = -1; N.buses.forEach((b, i) => { const v = D.periods.reduce((s, p, t) => s + Math.abs(Rt.periods[t].lmp[i] - p.lmp[i]), 0); if (v > bv) { bv = v; best = i; } }); dartBus = N.buses[best].id; }
+  const bi = N.buses.findIndex((b) => b.id === dartBus);
+  let h = `<div class="small" style="margin-bottom:8px">${N.rt.events.length ? "Real-time events: " + N.rt.events.map(evtText).map(esc).join(" · ") : "No real-time events yet, so real time repeats the day-ahead result. Add events in the panel on the right."}</div>`;
+  if (nT > 1) {
+    const cats = D.periods.map((_, t) => "P" + (t + 1));
+    h += `<div class="ctrl"><label>Bus<select data-ctl="dart.bus">${N.buses.map((b) => `<option value="${b.id}" ${b.id === dartBus ? "selected" : ""}>Bus ${b.id}</option>`).join("")}</select></label></div>`;
+    h += lineChart({ title: "DA vs RT LMP", cats, xLabel: "Period", yLabel: "LMP $/MWh", tipY: money, series: [
+      { name: `Day-ahead, bus ${dartBus}`, color: SER[0], pts: D.periods.map((p, t) => [t, p.lmp[bi]]) },
+      { name: `Real-time, bus ${dartBus}`, color: SER[1], dash: true, pts: Rt.periods.map((p, t) => [t, p.lmp[bi]]) }],
+      tipExtra: (t) => `<div class="small">RT − DA ${signed(Rt.periods[t].lmp[bi] - D.periods[t].lmp[bi])}</div>` });
+  }
+  h += `<h3 style="font-size:15px;margin-top:14px">Prices${nT > 1 ? `, period ${t0 + 1}` : ""}</h3><div class="scroll"><table><thead><tr><th>Bus</th><th class="n">DA load</th><th class="n">RT load</th><th class="n">DA LMP</th><th class="n">RT LMP</th><th class="n">RT − DA</th></tr></thead><tbody>`;
+  N.buses.forEach((b, i) => { const sp = r.lmp[i] - d.lmp[i]; h += `<tr data-sel="bus:${b.id}"><td><b>Bus ${b.id}</b></td><td class="n">${f1(d.loads[i].withdraw)}</td><td class="n">${f1(r.loads[i].withdraw)}</td><td class="n">${money(d.lmp[i])}</td><td class="n">${money(r.lmp[i])}</td><td class="n ${sp > 0.005 ? "pos" : sp < -0.005 ? "neg" : ""}"><b>${signed(sp)}</b></td></tr>`; });
+  h += `</tbody></table></div>`;
+  h += `<h3 style="font-size:15px;margin-top:14px">Generators${nT > 1 ? `, period ${t0 + 1}` : ""}</h3><div class="scroll"><table><thead><tr><th>Unit</th><th class="n">DA MW</th><th class="n">DA LMP</th><th class="n">DA credit</th><th class="n">RT MW</th><th class="n">Deviation</th><th class="n">RT LMP</th><th class="n">Balancing</th><th class="n">Total</th></tr></thead><tbody>`;
+  N.gens.forEach((g, k) => { const a = d.gens[k], b = r.gens[k], dev = b.p - a.p, c1 = a.p * a.price, c2 = dev * b.price; h += `<tr data-sel="gen:${g.id}"><td><b>${esc(g.name)}</b> ${b.status === "out" ? STATUS_CHIP.out : ""}</td><td class="n">${f1(a.p)}</td><td class="n">${money(a.price)}</td><td class="n">${money(c1)}</td><td class="n">${f1(b.p)}</td><td class="n">${signed(dev, f1)}</td><td class="n">${money(b.price)}</td><td class="n">${money(c2)}</td><td class="n"><b>${money(c1 + c2)}</b></td></tr>`; });
+  h += `</tbody></table></div><div class="foot"><p><b>Two-settlement system.</b> Day-ahead quantities settle at day-ahead LMPs. In real time, only the deviation from the day-ahead schedule settles, at the real-time LMP. A unit that trips after clearing day-ahead must buy back its schedule at the real-time price. This is the DA–RT divergence you will measure in the PJM, MISO and SPP data.</p></div>`;
+  return h;
+}
+
+/* ---------- settlement statement ---------- */
+// returns line items for a whole day; amounts: + = credit to the participant, − = charge
+function buildStatement(net, da, rt) {
+  const lines = [], parts = new Map(), iso = { da: 0, rt: 0, daCong: 0, daLoss: 0, rtCong: 0, rtLoss: 0, daPer: [], rtPer: [], rtAlone: [] };
+  const two = !!rt;
+  const add = (key, who, type, bus, m, t, mw, price, amount) => {
+    lines.push({ m, t: t + 1, who, type, bus, mw, price, amount });
+    if (!parts.has(key)) parts.set(key, { who, type, bus, daMW: 0, da: 0, rtMW: 0, rt: 0 });
+    const p = parts.get(key); if (m === "RT") { p.rtMW += mw; p.rt += amount; } else { p.daMW += mw; p.da += amount; }
+  };
+  const mDA = two ? "DA" : "Energy";
+  da.periods.forEach((d, t) => {
+    net.gens.forEach((g, k) => add("g" + g.id, g.name, "Generator", g.bus, mDA, t, d.gens[k].p, d.gens[k].price, d.gens[k].p * d.gens[k].price));
+    net.buses.forEach((b, i) => { const l = d.loads[i]; if (l.d > 0 || b.bids.length) add("l" + b.id, `Load @ bus ${b.id}`, "Load (LSE)", b.id, mDA, t, l.withdraw, d.lmp[i], -l.withdraw * d.lmp[i]); });
+    iso.da += d.totals.surplus; iso.daCong += d.totals.congRent; iso.daLoss += d.totals.lossSurplus; iso.daPer.push(d.totals.surplus);
+    if (two) {
+      const r = rt.periods[t];
+      net.gens.forEach((g, k) => { const dev = r.gens[k].p - d.gens[k].p; add("g" + g.id, g.name, "Generator", g.bus, "RT", t, dev, r.gens[k].price, dev * r.gens[k].price); });
+      const netDev = net.buses.map(() => 0);
+      net.buses.forEach((b, i) => { const dev = r.loads[i].withdraw - d.loads[i].withdraw; netDev[i] += dev; if (d.loads[i].d > 0 || r.loads[i].d > 0 || b.bids.length) add("l" + b.id, `Load @ bus ${b.id}`, "Load (LSE)", b.id, "RT", t, dev, r.lmp[i], -dev * r.lmp[i]); });
+      net.gens.forEach((g, k) => (netDev[net.buses.findIndex((b) => b.id === g.bus)] -= r.gens[k].p - d.gens[k].p));
+      const ms = netDev.reduce((s, v, i) => s + v * r.lmp[i], 0), cg = netDev.reduce((s, v, i) => s + v * r.comp[i].cong, 0);
+      iso.rt += ms; iso.rtCong += cg; iso.rtLoss += ms - cg; iso.rtPer.push(ms); iso.rtAlone.push(r.totals.surplus);
+    }
+  });
+  const list = [...parts.values()];
+  const consumer = -list.filter((p) => p.type !== "Generator").reduce((s, p) => s + p.da + p.rt, 0);
+  return { lines, parts: list, iso, two, consumer };
+}
+function statementView() {
+  const S = buildStatement(N, RES.da, dart() ? RES.rt : null);
+  if (S.two && !RES.rt.ok) return `<div class="empty"><strong>Real-time case has no solution</strong></div>`;
+  const nT = T(), two = S.two;
+  let h = `<div class="row" style="margin-bottom:8px"><button class="btn primary" type="button" data-act="csvDl">Download CSV</button><button class="btn" type="button" data-act="csvCopy">Copy CSV</button><span class="small" id="csvMsg"></span></div>`;
+  h += `<div class="scroll"><table><thead><tr><th>Participant</th><th>Type</th><th>Bus</th><th class="n">${two ? "DA MWh" : "MWh"}</th><th class="n">${two ? "DA $" : "Amount $"}</th>${two ? '<th class="n">RT dev. MWh</th><th class="n">RT $</th>' : ""}<th class="n">Net $</th></tr></thead><tbody>`;
+  let tot = 0;
+  S.parts.forEach((p) => { tot += p.da + p.rt; h += `<tr><td><b>${esc(p.who)}</b></td><td>${p.type}</td><td>${p.bus}</td><td class="n">${f1(p.daMW)}</td><td class="n">${money(p.da)}</td>${two ? `<td class="n">${signed(p.rtMW, f1)}</td><td class="n">${money(p.rt)}</td>` : ""}<td class="n"><b>${money(p.da + p.rt)}</b></td></tr>`; });
+  const isoTot = S.iso.da + S.iso.rt;
+  h += `<tr class="tot"><td colspan="3">ISO: congestion rent</td><td></td><td class="n">${money(S.iso.daCong)}</td>${two ? `<td></td><td class="n">${money(S.iso.rtCong)}</td>` : ""}<td class="n">${money(S.iso.daCong + S.iso.rtCong)}</td></tr>`;
+  h += `<tr><td colspan="3">ISO: loss surplus</td><td></td><td class="n">${money(S.iso.daLoss)}</td>${two ? `<td></td><td class="n">${money(S.iso.rtLoss)}</td>` : ""}<td class="n">${money(S.iso.daLoss + S.iso.rtLoss)}</td></tr>`;
+  h += `<tr class="tot"><td colspan="${two ? 7 : 5}">Check: participants + ISO (must be zero)</td><td class="n">${money(tot + isoTot)}</td></tr></tbody></table></div>`;
+  // reconcile with the single-period merchandising surplus shown in "Dispatch & settlement"
+  if (nT > 1 || two) {
+    h += `<h3 style="font-size:15px;margin-top:16px">Where the ISO surplus comes from</h3><div class="scroll"><table style="max-width:820px"><thead><tr><th>Period</th><th class="n">${two ? "Day-ahead merch. surplus" : "Merch. surplus"}</th>${two ? '<th class="n">RT balancing surplus</th><th class="n">ISO total</th><th class="n">RT alone (not settled)</th>' : ""}</tr></thead><tbody>`;
+    S.iso.daPer.forEach((v, t) => (h += `<tr><td>P${t + 1}</td><td class="n">${money(v)}</td>${two ? `<td class="n">${money(S.iso.rtPer[t])}</td><td class="n"><b>${money(v + S.iso.rtPer[t])}</b></td><td class="n small">${money(S.iso.rtAlone[t])}</td>` : ""}</tr>`));
+    h += `<tr class="tot"><td>Day</td><td class="n">${money(S.iso.da)}</td>${two ? `<td class="n">${money(S.iso.rt)}</td><td class="n">${money(isoTot)}</td><td></td>` : ""}</tr></tbody></table></div>`;
+    h += `<div class="foot"><p>The <b>Dispatch &amp; settlement</b> tab shows one period of one market at a time. ${two ? "With <b>Day-ahead</b> selected, its merchandising surplus equals the day-ahead column here for that period. In real time only deviations settle, so the ISO also keeps (or pays) the <b>RT balancing surplus</b>: Σ (RT − DA net withdrawal) × RT LMP. The ISO surplus is the sum of both columns over all periods. The balancing surplus is zero in a period where the same lines bind at the same limits in both markets; outages and derates make it non-zero. The last column is what the Dispatch &amp; settlement tab shows with <b>Real-time</b> selected: the surplus if real time were settled on its own, which never happens in a two-settlement market." : "The ISO surplus is the sum of those per-period values."}</p></div>`;
+  }
+  h += `<div class="score"><div class="kpi"><div class="l">Consumer payments</div><div class="v">${money(S.consumer)}</div></div><div class="kpi"><div class="l">Generator net revenue</div><div class="v">${money(S.parts.filter((p) => p.type === "Generator").reduce((s, p) => s + p.da + p.rt, 0))}</div></div><div class="kpi"><div class="l">ISO surplus</div><div class="v">${money(isoTot)}</div></div></div>`;
+  h += `<div class="foot"><p>Amounts are for the whole day (${nT} period${nT === 1 ? "" : "s"} of one hour each). Positive = credit to the participant, negative = charge. ${two ? "Day-ahead MWh settle at day-ahead LMPs; real-time deviations from the day-ahead schedule settle at real-time LMPs. " : ""}The ISO collects the difference between what loads pay and what generators receive. It splits into congestion rent (which funds FTRs in a real market) and loss surplus. The CSV has one row per participant, period and market, like an ISO settlement statement.</p></div>`;
+  return h;
+}
+function statementCSV() {
+  const S = buildStatement(N, RES.da, dart() ? RES.rt : null);
+  const q = (v) => (/[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : v);
+  const rows = [["Market", "Period", "Participant", "Type", "Bus", "MWh", "LMP $/MWh", "Amount $ (+credit/-charge)"]];
+  S.lines.forEach((l) => rows.push([l.m, l.t, l.who, l.type, l.bus, l.mw.toFixed(3), l.price.toFixed(4), l.amount.toFixed(2)]));
+  rows.push(["DA" + (S.two ? "" : "/Energy"), "all", "ISO", "Congestion rent", "", "", "", S.iso.daCong.toFixed(2)], ["DA" + (S.two ? "" : "/Energy"), "all", "ISO", "Loss surplus", "", "", "", S.iso.daLoss.toFixed(2)]);
+  if (S.two) rows.push(["RT", "all", "ISO", "Congestion rent", "", "", "", S.iso.rtCong.toFixed(2)], ["RT", "all", "ISO", "Loss surplus", "", "", "", S.iso.rtLoss.toFixed(2)]);
+  return rows.map((r) => r.map(q).join(",")).join("\n");
+}
+function download(name, text, type) {
+  const blob = new Blob([text], { type }); const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- tab actions and controls ---------- */
+function tabAction(act, a) {
+  if (act === "csvDl") { try { download(`settlement-${(N.name || "network").replace(/[^\w-]+/g, "-").toLowerCase()}.csv`, statementCSV(), "text/csv"); $("csvMsg").textContent = "If nothing downloaded, use Copy CSV."; } catch (e) { $("csvMsg").textContent = "Downloads are blocked here. Use Copy CSV."; } }
+  if (act === "csvCopy") { const t = statementCSV(); try { navigator.clipboard.writeText(t).then(() => ($("csvMsg").textContent = "Copied. Paste into Excel or Sheets."), () => ($("csvMsg").textContent = "Copy was blocked.")); } catch (e) { $("csvMsg").textContent = "Copy was blocked."; } }
+}
+$("tabBody").addEventListener("change", (e) => {
+  const c = e.target.dataset && e.target.dataset.ctl; if (!c) return;
+  const v = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+  if (c === "dart.bus") { dartBus = +v; drawTab(); }
+});
+
+/* ---------- view bar, real-time events, settings ---------- */
+function drawViewbar() {
+  const vb = $("viewbar"), showP = T() > 1, showM = dart() && mode === "market";
+  vb.hidden = !(showP || showM);
+  $("perSeg").parentElement && ($("perSeg").style.display = showP ? "" : "none");
+  vb.querySelectorAll(".lbl")[0].style.display = showP ? "" : "none";
+  $("perSeg").innerHTML = Array.from({ length: T() }, (_, t) => `<button type="button" data-p="${t}" aria-pressed="${t === curP}">P${t + 1}</button>`).join("");
+  $("mktWrap").style.display = showM ? "" : "none";
+  $("mktSeg").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.m === mkt));
+  $("viewNote").textContent = mode === "market" && dart() && mkt === "rt" ? `${N.rt.events.length} real-time event${N.rt.events.length === 1 ? "" : "s"} applied` : showP && mode === "build" ? "Loads shown for this period" : "";
+}
+function setView(p, m) {
+  if (p !== undefined) curP = clamp(p, 0, T() - 1);
+  if (m !== undefined) mkt = m;
+  pickR(); drawAllButTables(); drawTabs(); if (!isInputTab(tab)) drawTab(); highlightRow(); save();
+}
+$("perSeg").addEventListener("click", (e) => { const b = e.target.closest("[data-p]"); if (b) setView(+b.dataset.p); });
+$("mktSeg").addEventListener("click", (e) => { const b = e.target.closest("[data-m]"); if (b) setView(undefined, b.dataset.m); });
+const EVT_TYPES = [["loadPct", "Load change, all buses (%)"], ["load", "Load change at a bus (MW)"], ["noise", "Random forecast error (± %)"], ["gen", "Unit outage or derate"], ["lineOut", "Line outage"], ["lineRate", "Line derate"]];
+function evtText(e) {
+  const per = +e.period ? ` in P${e.period}` : T() > 1 ? " in all periods" : "";
+  const ln = (id) => { const l = N.lines.find((x) => x.id === +id); return l ? lineLabel(l) : "#" + id; };
+  const gn = (id) => { const g = N.gens.find((x) => x.id === +id); return g ? g.name : "#" + id; };
+  if (e.type === "loadPct") return `Load ${signed(+e.pct, (v) => g0(v))}% at all buses${per}`;
+  if (e.type === "load") return `Load ${signed(+e.mw, (v) => g0(v))} MW at bus ${e.bus}${per}`;
+  if (e.type === "noise") return `Random load error ±${g0(e.pct)}% (seed ${e.seed})`;
+  if (e.type === "gen") return +e.avail > 0 ? `${gn(e.gen)} derated to ${g0(e.avail)} MW${per}` : `${gn(e.gen)} trips${per}`;
+  if (e.type === "lineOut") return `Line ${ln(e.line)} out${per}`;
+  return `Line ${ln(e.line)} limit cut to ${g0(e.rating)} MW${per}`;
+}
+let rtType = "loadPct";
+// force = redraw the add-event form even if one of its fields has focus (e.g. after changing Type)
+function drawRtPanel(force) {
+  const p = $("rtPanel"); p.hidden = !dart();
+  if (p.hidden) return;
+  $("rtList").innerHTML = N.rt.events.map((e, i) => `<div class="evt"><span>${esc(evtText(e))}</span><button class="xbtn" type="button" data-ev="${i}" aria-label="Remove event">×</button></div>`).join("") || `<div class="small">No events: real time repeats the day-ahead result.</div>`;
+  if (!force && document.activeElement && $("rtForm").contains(document.activeElement)) return;
+  const perSel = T() > 1 ? `<label for="rtPer">Period</label><select id="rtPer"><option value="0">All periods</option>${Array.from({ length: T() }, (_, t) => `<option value="${t + 1}">P${t + 1}</option>`).join("")}</select>` : "";
+  let f = `<label for="rtType">Type</label><select id="rtType">${EVT_TYPES.map(([v, t]) => `<option value="${v}" ${v === rtType ? "selected" : ""}>${t}</option>`).join("")}</select>`;
+  if (rtType === "loadPct") f += `<label for="rtVal">Change <span class="unit">%</span></label><input id="rtVal" type="number" value="5" step="1">` + perSel;
+  if (rtType === "load") f += `<label for="rtTgt">Bus</label><select id="rtTgt">${N.buses.map((b) => `<option value="${b.id}">Bus ${b.id}</option>`).join("")}</select><label for="rtVal">Change <span class="unit">MW</span></label><input id="rtVal" type="number" value="25" step="5">` + perSel;
+  if (rtType === "noise") f += `<label for="rtVal">Std. error <span class="unit">%</span></label><input id="rtVal" type="number" value="5" step="1" min="0"><label for="rtSeed">Seed</label><input id="rtSeed" type="number" value="${1 + Math.floor(Math.random() * 9999)}" step="1">`;
+  if (rtType === "gen") f += `<label for="rtTgt">Unit</label><select id="rtTgt">${N.gens.map((g) => `<option value="${g.id}">${esc(g.name)}</option>`).join("")}</select><label for="rtVal">Available <span class="unit">MW</span></label><input id="rtVal" type="number" value="0" step="10" min="0">` + perSel;
+  if (rtType === "lineOut" || rtType === "lineRate") f += `<label for="rtTgt">Line</label><select id="rtTgt">${N.lines.map((l) => `<option value="${l.id}">${lineLabel(l)}</option>`).join("")}</select>${rtType === "lineRate" ? `<label for="rtVal">New limit <span class="unit">MW</span></label><input id="rtVal" type="number" value="100" step="10" min="0">` : ""}` + perSel;
+  $("rtForm").innerHTML = f;
+  $("rtType").onchange = (e) => { rtType = e.target.value; drawRtPanel(true); $("rtType").focus(); };
+}
+$("rtAdd").addEventListener("click", () => {
+  const v = $("rtVal") ? +$("rtVal").value : 0, tg = $("rtTgt") ? +$("rtTgt").value : null, per = $("rtPer") ? +$("rtPer").value : 0;
+  if ($("rtVal") && !isFinite(v)) return;
+  if (["load", "gen", "lineOut", "lineRate"].includes(rtType) && !tg) return flash("Nothing to choose: add that element first.");
+  const e = { type: rtType, period: per };
+  if (rtType === "loadPct") e.pct = v; if (rtType === "load") { e.bus = tg; e.mw = v; }
+  if (rtType === "noise") { e.pct = Math.abs(v); e.seed = ($("rtSeed") && +$("rtSeed").value) || 1 + Math.floor(Math.random() * 9999); delete e.period; }
+  if (rtType === "gen") { e.gen = tg; e.avail = Math.max(0, v); } if (rtType === "lineOut") e.line = tg; if (rtType === "lineRate") { e.line = tg; e.rating = Math.max(0, v); }
+  snapshot(); N.rt.events.push(e); if (mode === "market") mkt = "rt"; refresh(true);
+});
+$("rtList").addEventListener("click", (e) => { const b = e.target.closest("[data-ev]"); if (b) { snapshot(); N.rt.events.splice(+b.dataset.ev, 1); refresh(true); } });
+$("optPeriods").addEventListener("change", (e) => { snapshot(); N.settings.periods = +e.target.value; normalize(N); curP = Math.min(curP, T() - 1); refresh(true); });
+$("optMarket").addEventListener("change", (e) => { snapshot(); N.settings.market = e.target.value; if (!dart()) mkt = "da"; refresh(true); });
+$("legend").addEventListener("change", (e) => { if (e.target.id === "colorBy") { N.settings.colorBy = e.target.value; draw(); save(); } });
 
 /* ---------- mode, settings, events ---------- */
 function setMode(m) {
-  mode = m; pendingFrom = null; revealed = false;
+  mode = m; pendingFrom = null;
   $("modeBuild").setAttribute("aria-pressed", m === "build"); $("modeMarket").setAttribute("aria-pressed", m === "market");
   $("tools").hidden = m !== "build";
-  if (m === "market") tab = "prices"; else if (!DATA_TABS.some((t) => t[0] === tab)) tab = "buses";
+  if (m === "market") tab = "prices"; else if (!isInputTab(tab)) tab = "buses";
   refresh(true);
 }
 $("modeBuild").addEventListener("click", () => setMode("build"));
 $("modeMarket").addEventListener("click", () => setMode("market"));
 $("optLoss").addEventListener("change", (e) => { snapshot(); N.settings.losses = e.target.checked; refresh(false); });
 $("optCong").addEventListener("change", (e) => { snapshot(); N.settings.congestion = e.target.checked; refresh(false); });
-$("optHide").addEventListener("change", (e) => { hidden = e.target.checked; revealed = false; refresh(false); });
-$("revealBtn").addEventListener("click", () => { revealed = true; refresh(false); });
 $("refBus").addEventListener("change", (e) => { N.settings.ref = +e.target.value; refresh(false); });
 $("voll").addEventListener("input", (e) => { const v = parseFloat(e.target.value); if (v > 0) { N.settings.voll = v; schedule(); } });
 $("undoBtn").addEventListener("click", doUndo);
@@ -1328,12 +2036,18 @@ $("undoBtn").addEventListener("click", doUndo);
 document.addEventListener("focusin", onFieldFocus);
 ["insp", "tabBody"].forEach((id) => {
   $(id).addEventListener("input", (e) => { if (e.target.tagName !== "SELECT") onFieldInput(e); });
-  $(id).addEventListener("change", (e) => { if (e.target.tagName === "SELECT") onFieldInput(e); else if (e.target.type === "text") refresh(true); });
+  $(id).addEventListener("change", (e) => { if (e.target.tagName === "SELECT") onFieldInput(e); else if (e.target.type === "text" && e.target.dataset.path) refresh(true); });
 });
 $("insp").addEventListener("click", (e) => {
   const a = e.target.closest("[data-act]"); if (!a || !sel) return;
   if (a.dataset.act === "delete") del(sel.kind, sel.id);
   if (a.dataset.act === "addGenHere" && sel.kind === "bus") addGen(sel.id);
+  const q = +a.dataset.q, g = sel.kind === "gen" ? N.gens.find((x) => x.id === sel.id) : null, b = sel.kind === "bus" ? busById(sel.id) : null;
+  if (g && a.dataset.act === "addBlock" && g.blocks.length < 5) { snapshot(); const last = g.blocks[g.blocks.length - 1]; g.blocks.push({ mw: 50, price: (+last.price || 0) + 5 }); syncGen(g); refresh(true); }
+  if (g && a.dataset.act === "delBlock" && g.blocks.length > 1) { snapshot(); g.blocks.splice(q, 1); syncGen(g); refresh(true); }
+  if (b && a.dataset.act === "addBid" && b.bids.length < 5) { snapshot(); const last = b.bids[b.bids.length - 1]; b.bids.push({ mw: 50, price: last ? Math.max(0, last.price - 5) : 40 }); refresh(true); }
+  if (b && a.dataset.act === "delBid") { snapshot(); b.bids.splice(q, 1); refresh(true); }
+  if (b && a.dataset.act === "resetLoadP") { snapshot(); b.loadP = null; refresh(true); }
 });
 $("tabBody").addEventListener("click", (e) => {
   const d = e.target.closest("[data-del]");
@@ -1344,6 +2058,8 @@ $("tabBody").addEventListener("click", (e) => {
     if (act === "tblAddBus") { const p = freeSpot(); addBus(p.x, p.y); }
     if (act === "tblAddLine" && N.buses.length >= 2) addLine(N.buses[0].id, N.buses[1].id);
     if (act === "tblAddGen" && N.buses.length) addGen((sel && sel.kind === "bus" ? sel.id : N.buses[0].id));
+    if (act === "resetAllLoadP") { snapshot(); N.buses.forEach((b) => (b.loadP = null)); refresh(true); }
+    tabAction(act, a);
     if (act === "pin" && R && R.ok) {
       const B = { obj: R.obj, losses: R.totals.losses, surplus: R.totals.surplus, lmp: {}, gen: {}, flow: {} };
       N.buses.forEach((b, i) => (B.lmp[b.id] = R.lmp[i])); N.gens.forEach((g, k) => (B.gen[g.id] = [g.name, R.gens[k].p])); N.lines.forEach((l, j) => (B.flow[l.id] = [lineLabel(l), R.lines[j].F]));
@@ -1378,7 +2094,7 @@ $("library").addEventListener("change", (e) => {
 });
 $("confirmYes").addEventListener("click", () => { $("confirmBox").hidden = true; if (pendingLib) openLib(pendingLib); pendingLib = null; });
 $("confirmNo").addEventListener("click", () => { $("confirmBox").hidden = true; pendingLib = null; });
-function openLib(v) { snapshot(); N = LIB[v](); sel = null; baseline = null; revealed = false; fitView(); if (v === "blank") { setMode("build"); setTool("bus"); } else refresh(true); }
+function openLib(v) { snapshot(); N = normalize(LIB[v]()); sel = null; baseline = null; curP = 0; mkt = "da"; dartBus = null; fitView(); if (v === "blank") { setMode("build"); setTool("bus"); } else refresh(true); }
 
 /* save / load */
 function encode() { return btoa(unescape(encodeURIComponent(JSON.stringify({ app: "net-lmp-lab", v: 1, N })))); }
@@ -1389,7 +2105,8 @@ function accept(d) {
   n.buses.forEach((b) => { b.id = +b.id; b.x = clamp(+b.x || 0, 25, W - 25); b.y = clamp(+b.y || 0, 25, H - 25); b.load = +b.load || 0; });
   n.lines.forEach((l) => { l.id = +l.id; l.from = +l.from; l.to = +l.to; l.x = +l.x; l.r = +l.r || 0; l.rating = +l.rating; });
   n.gens.forEach((g) => { g.id = +g.id; g.bus = +g.bus; g.cap = +g.cap; g.offer = +g.offer; g.name = String(g.name || "G").slice(0, 8); });
-  snapshot(); N = n; sel = null; baseline = null; revealed = false; fitView(); refresh(true);
+  n.buses.forEach((b) => { b.id = +b.id; }); normalize(n);
+  snapshot(); N = n; sel = null; baseline = null; curP = 0; mkt = "da"; fitView(); refresh(true);
 }
 $("shareBtn").addEventListener("click", () => { const p = $("sharePanel"); p.hidden = !p.hidden; if (!p.hidden) { $("codeText").value = encode(); $("codeMsg").textContent = ""; } });
 $("copyCode").addEventListener("click", () => {
@@ -1421,13 +2138,13 @@ function drawAllButTables() { draw(); drawKpis(); drawStatus(); drawInspector();
 function refresh(tablesToo) {
   solveNow();
   drawAllButTables(); drawTabs();
-  if (tablesToo || !DATA_TABS.some((t) => t[0] === tab)) drawTab();
+  if (tablesToo || !isInputTab(tab)) drawTab();
   highlightRow(); save();
 }
 let timer = null;
 function schedule() {
   clearTimeout(timer);
-  timer = setTimeout(() => { solveNow(); drawAllButTables(); if (!DATA_TABS.some((t) => t[0] === tab)) drawTab(); else refreshDataInfo(); save(); }, 150);
+  timer = setTimeout(() => { solveNow(); drawAllButTables(); if (!isInputTab(tab)) drawTab(); save(); }, 150);
 }
 function refreshDataInfo() { /* data tables keep focus while typing; counts update on next structural refresh */ }
 
@@ -1470,6 +2187,25 @@ $("net").addEventListener("wheel", (e) => {
 }, { passive: false });
 $("wideToggle").addEventListener("change", (e) => { document.querySelector(".work").classList.toggle("wide", e.target.checked); saveView(); });
 
+function showGuide(on) {
+  document.body.classList.toggle("show-guide", on); $("guide").hidden = !on;
+  try { if (on && location.hash !== "#guide") history.replaceState(null, "", "#guide"); if (!on && location.hash === "#guide") history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  if (on) { window.scrollTo(0, 0); window.dispatchEvent(new Event("scroll")); }
+}
+$("guideBtn").addEventListener("click", () => showGuide(true));
+$("guideBack").addEventListener("click", () => showGuide(false));
+$("guideBack2").addEventListener("click", () => showGuide(false));
+$("guide").addEventListener("click", (e) => { const a = e.target.closest(".gnav a"); if (a) { e.preventDefault(); const t = document.querySelector(a.getAttribute("href")); if (t) t.scrollIntoView({ behavior: "smooth" }); } });
+// highlight the section being read in the contents list
+window.addEventListener("scroll", () => {
+  if ($("guide").hidden) return;
+  let cur = null; document.querySelectorAll(".gcard").forEach((c) => { if (c.getBoundingClientRect().top < 140) cur = c.id; });
+  if (!cur) cur = "g-start";
+  document.querySelectorAll(".gnav a").forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + cur));
+}, { passive: true });
+window.addEventListener("hashchange", () => showGuide(location.hash === "#guide"));
+if (location.hash === "#guide") showGuide(true);
+
 load();
 try {
   const v = JSON.parse(localStorage.getItem(LS + "-view") || "null");
@@ -1505,8 +2241,8 @@ refresh(true);
     const label = e.target.selectedOptions[0] ? e.target.selectedOptions[0].textContent : v;
     track("network-" + v, "Start from: " + label);
   }, true);
-  on("revealBtn", "click", () => track("reveal-results", "Reveal results"));
   on("shareBtn", "click", () => track("save-load-open", "Save / load opened"));
+  on("guideBtn", "click", () => track("guide-open", "Instructions opened"));
   on("copyCode", "click", () => track("code-copy", "Copy network code"));
   on("loadCode", "click", () => track("code-load", "Load network code"));
   on("dlFile", "click", () => track("file-download", "Download .json"));
